@@ -1,4 +1,4 @@
-SOURCES = call.c unicode.c
+SOURCES = call.c eval.c unicode.c
 PYTHON_VERSION = $(shell python3 -c 'import sys; ver=sys.version_info; print("%s.%s" % (ver.major, ver.minor))')
 PKG_CONFIG_PYTHON = python-$(PYTHON_VERSION)
 CFLAGS = $(shell pkg-config $(PKG_CONFIG_PYTHON) --cflags)

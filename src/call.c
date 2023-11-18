@@ -1,9 +1,7 @@
 #define DeadPy_NO_ALIAS
-
 #include "deadparrot.h"
 #include "private.h"
 
-// Ignore deprecation warnings
 IGNORE_DEPR_WARNINGS
 
 

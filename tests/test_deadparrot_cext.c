@@ -42,11 +42,42 @@ test_call(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 
 
 static PyObject *
+test_interp(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
+{
+#if PY_VERSION_HEX >= 0x03080000
+    PyInterpreterState *interp = _PyInterpreterState_Get();
+    assert(interp != NULL);
+#endif
+
+    Py_RETURN_NONE;
+}
+
+
+static PyObject *
+test_eval(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
+{
+    // test PyEval_InitThreads()
+    PyEval_InitThreads();
+
+    Py_RETURN_NONE;
+}
+
+
+static PyObject *
 test_unicode(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 {
     // test PyUnicode_GetMax()
     DeadPy_UNICODE unicode_max = PyUnicode_GetMax();
     assert(unicode_max == 0x10ffff || unicode_max == 0xffff);
+
+#if PY_VERSION_HEX >= 0x03000000
+    PyObject *str = PyUnicode_FromString("abc");
+    if (str == NULL) {
+        return NULL;
+    }
+    DeadPyUnicode_InternImmortal(&str);
+    assert(str != NULL);
+#endif
 
     Py_RETURN_NONE;
 }
@@ -54,6 +85,8 @@ test_unicode(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 
 static struct PyMethodDef methods[] = {
     {"test_call", test_call, METH_NOARGS, NULL},
+    {"test_eval", test_eval, METH_NOARGS, NULL},
+    {"test_interp", test_interp, METH_NOARGS, NULL},
     {"test_unicode", test_unicode, METH_NOARGS, NULL},
     {NULL, NULL, 0, NULL}
 };
