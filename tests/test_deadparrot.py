@@ -7,6 +7,7 @@ import os.path
 import shutil
 import subprocess
 import sys
+import warnings
 try:
     import faulthandler
 except ImportError:
@@ -127,6 +128,9 @@ def run_tests(module_name, verbose):
 
     def test_func():
         _run_tests(tests, verbose)
+
+    # Ignore DeprecationWarning
+    warnings.simplefilter("ignore", DeprecationWarning)
 
     if check_refleak:
         _check_refleak(test_func, verbose)
