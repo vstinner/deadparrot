@@ -38,27 +38,47 @@ test_call(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
     Py_DECREF(res);
 
     // test PyCFunction_Call()
-    PyObject *abc = PyUnicode_FromString("abc");
-    if (abc == NULL) {
-        return NULL;
-    }
-    PyObject *meth = PyObject_GetAttrString(abc, "upper");
-    Py_DECREF(abc);
-    if (meth == NULL) {
-        return NULL;
-    }
-    assert(PyCFunction_Check(meth));
+    {
+        PyObject *abc = PyUnicode_FromString("abc");
+        if (abc == NULL) {
+            return NULL;
+        }
+        PyObject *meth = PyObject_GetAttrString(abc, "upper");
+        Py_DECREF(abc);
+        if (meth == NULL) {
+            return NULL;
+        }
+        assert(PyCFunction_Check(meth));
 
-    PyObject *args = PyTuple_New(0);
-    if (args == NULL) {
+        PyObject *args = PyTuple_New(0);
+        if (args == NULL) {
+            Py_DECREF(meth);
+            return NULL;
+        }
+        res = PyCFunction_Call(meth, args, NULL);
         Py_DECREF(meth);
-        return NULL;
+        Py_DECREF(args);
+        assert(res != NULL);
+        Py_DECREF(res);
     }
-    res = PyCFunction_Call(meth, args, NULL);
-    Py_DECREF(meth);
-    Py_DECREF(args);
+
+    // test PyEval_CallFunction()
+    res = PyEval_CallFunction(func, "()");
     assert(res != NULL);
     Py_DECREF(res);
+
+    // test PyEval_CallMethod()
+    {
+        PyObject *obj = PyUnicode_FromString("abc");
+        if (obj == NULL) {
+            return NULL;
+        }
+
+        res = PyEval_CallMethod(obj, "upper", "()");
+        Py_DECREF(obj);
+        assert(res != NULL);
+        Py_DECREF(res);
+    }
 
     Py_RETURN_NONE;
 }

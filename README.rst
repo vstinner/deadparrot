@@ -20,6 +20,8 @@ Functions
 Functions exported by the deadparrot library:
 
 * PyCFunction_Call()
+* PyEval_CallFunction()
+* PyEval_CallMethod()
 * PyEval_CallObject()
 * PyEval_CallObjectWithKeywords()
 * PyEval_InitThreads()
@@ -64,8 +66,6 @@ Removed in Python 3.13
 ----------------------
 
 * PyEval_AcquireLock()
-* PyEval_CallFunction()
-* PyEval_CallMethod()
 * PyEval_ReleaseLock()
 * PyEval_ThreadsInitialized()
 * PyObject_AsCharBuffer()
@@ -85,14 +85,7 @@ Removed in Python 3.13
 * Py_SetStandardStreamEncoding()
 * Py_TRASHCAN_SAFE_BEGIN
 * Py_TRASHCAN_SAFE_END
-* _PyObject_CallMethodNoArgs()
-* _PyObject_CallMethodOneArg()
-* _PyObject_CallOneArg()
 * _PyObject_FastCall()
-* _PyObject_FastCallDict()
-* _PyObject_Vectorcall()
-* _PyObject_VectorcallMethod()
-* _PyVectorcall_Function()
 * _Py_SetProgramFullPath()
 
 Removed in Python 3.12
@@ -254,7 +247,7 @@ Removed in Python 3.1
 Removed in Python 3.0
 ---------------------
 
-* PyString prefix was replaed with PyUnicode
+* PyString prefix was replaced with PyUnicode
 * PyInt prefix was replaced with PyLong
 * METH_OLDARGS
 * PyMember_Get()

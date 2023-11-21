@@ -60,3 +60,65 @@ DeadPyCFunction_Call(PyObject *callable, PyObject *args, PyObject *kwargs)
     return PyCFunction_Call(callable, args, kwargs);
 #endif
 }
+
+PyObject *
+dead_build_args_tuple(const char *format, va_list vargs)
+{
+    PyObject *args = Py_VaBuildValue(format, vargs);
+    if (args == NULL) {
+        return NULL;
+    }
+    if (!PyTuple_Check(args)) {
+        Py_DECREF(args);
+        PyErr_SetString(PyExc_TypeError,
+                        "argument list must be a tuple");
+        return NULL;
+    }
+    return args;
+}
+
+
+PyObject *
+DeadPyEval_CallFunction(PyObject *callable, const char *format, ...)
+{
+    va_list vargs;
+    va_start(vargs, format);
+    PyObject *args = dead_build_args_tuple(format, vargs);
+    va_end(vargs);
+    if (args == NULL) {
+        return NULL;
+    }
+
+    PyObject *res = PyObject_Call(callable, args, NULL);
+    Py_DECREF(args);
+    return res;
+}
+
+
+PyObject *
+DeadPyEval_CallMethod(PyObject *obj, const char *name, const char *format, ...)
+{
+    if (obj == NULL || name == NULL) {
+        PyErr_BadArgument();
+        return NULL;
+    }
+
+    va_list vargs;
+    va_start(vargs, format);
+    PyObject *args = dead_build_args_tuple(format, vargs);
+    va_end(vargs);
+    if (args == NULL) {
+        return NULL;
+    }
+
+    PyObject *callable = PyObject_GetAttrString(obj, name);
+    if (callable == NULL) {
+        Py_DECREF(args);
+        return NULL;
+    }
+
+    PyObject *res = PyObject_Call(callable, args, NULL);
+    Py_DECREF(callable);
+    Py_DECREF(args);
+    return res;
+}
