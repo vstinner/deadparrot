@@ -7,18 +7,23 @@ project(deadparrot
 
 set(Python_VERSION "" CACHE STRING "Optional user-selected Python version")
 if(Python_VERSION)
-find_package (Python ${Python_VERSION} EXACT REQUIRED COMPONENTS Development)
+  find_package (Python ${Python_VERSION} EXACT REQUIRED COMPONENTS Development)
 else()
-find_package (Python COMPONENTS Development)
+  find_package (Python COMPONENTS Development)
 endif()
+include_directories(${Python_INCLUDE_DIRS})
 
-include_directories("${Python_INCLUDE_DIRS}")
-
-add_library(deadparrot SHARED
+add_library(${PROJECT_NAME} SHARED
     call.c
     eval.c
     unicode.c
 )
+set_target_properties(${PROJECT_NAME}
+    PROPERTIES VERSION ${PROJECT_VERSION}
+    PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
+    PROPERTIES PUBLIC_HEADER deadparrot.h)
 
-install(TARGETS deadparrot DESTINATION lib)
-install(FILES deadparrot.h DESTINATION include)
+install(TARGETS ${PROJECT_NAME}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)

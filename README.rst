@@ -28,3 +28,8 @@ cmake 3.5 or newer is required to build libparrot. Build command::
     cd build
     cmake ..
     make
+
+Install in a specific directory::
+
+    cmake .. -D CMAKE_INSTALL_PREFIX=/path/to/custom/prefix
+    make install
