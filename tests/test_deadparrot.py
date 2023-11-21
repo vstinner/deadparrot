@@ -15,7 +15,7 @@ except ImportError:
     faulthandler = None
 
 # test.utils
-from utils import run_command, SRC_DIR, TEST_DIR, LIBPARROT_LIBDIR
+from utils import run_command, MS_WINDOWS, SRC_DIR, TEST_DIR, LIBPARROT_LIBDIR
 
 
 def display_title(title):
@@ -65,15 +65,6 @@ def build_test_cext(module_name, verbose):
 
 
 def import_tests(module_name):
-    pythonpath = None
-    for name in os.listdir("build"):
-        if name.startswith('lib.'):
-            pythonpath = os.path.join("build", name)
-
-    if not pythonpath:
-        raise Exception("Failed to find the build directory")
-    sys.path.append(pythonpath)
-
     return __import__(module_name)
 
 
@@ -171,6 +162,8 @@ def parse_args():
                         help='Verbose mode')
     parser.add_argument('--dont-build', dest="build", action="store_false",
                         help="Don't build (internal flag, don't use it)")
+    parser.add_argument('--deadparrot-libdir')
+    parser.add_argument('--cext-dir')
     return parser.parse_args()
 
 
@@ -221,16 +214,24 @@ def main():
             print()
 
         build_dir = build_test_cext(module_name, verbose)
-        sys.path.append(build_dir)
         if verbose:
             print()
 
-        os.environ['LD_LIBRARY_PATH'] = library_path
-        cmd = [sys.executable, script, "--dont-build"]
+        env = dict(os.environ)
+        if not MS_WINDOWS:
+            env['LD_LIBRARY_PATH'] = library_path
+        cmd = [
+            sys.executable, script,
+            "--dont-build",
+            "--deadparrot-libdir", library_path,
+            "--cext-dir", build_dir]
         if args.verbose:
             cmd.append('--verbose')
-        run_command(cmd, verbose=True)
+        run_command(cmd, verbose=True, env=env)
     else:
+        if MS_WINDOWS:
+            os.add_dll_directory(args.deadparrot_libdir)
+        sys.path.append(args.cext_dir)
         run_tests(module_name, verbose)
 
 

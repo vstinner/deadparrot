@@ -14,6 +14,9 @@ endif()
 include_directories(${Python_INCLUDE_DIRS})
 link_directories(${Python_LIBRARY_DIRS})
 
+# On Windows, not only create .dll but also .lib
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 add_library(${PROJECT_NAME} SHARED
     call.c
     eval.c

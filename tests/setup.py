@@ -36,7 +36,7 @@ def main():
         ldflags = ["-L", LIBPARROT_LIBDIR]
     else:
         cflags.extend(('/I', LIBPARROT_INCDIR))
-        ldflags = ["/LIBDIR:%s" % LIBPARROT_LIBDIR]
+        ldflags = ["/LIBPATH:%s" % LIBPARROT_LIBDIR]
     ext = Extension(
         'test_deadparrot_cext',
         sources=sources,

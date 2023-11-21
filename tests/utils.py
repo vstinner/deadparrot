@@ -37,18 +37,18 @@ def command_stdout(cmd, **kw):
         return (proc.returncode, stdout)
 
 
-def run_command(cmd, verbose=False, check=True):
+def run_command(cmd, verbose=False, check=True, env=None):
     if not verbose:
-        exitcode, stdout = command_stdout(cmd)
+        exitcode, stdout = command_stdout(cmd, env=env)
         if check and exitcode:
             print(stdout.rstrip())
             sys.exit(exitcode)
         return exitcode
 
     if hasattr(subprocess, 'run'):
-        proc = subprocess.run(cmd)
+        proc = subprocess.run(cmd, env=env)
     else:
-        proc = subprocess.Popen(cmd)
+        proc = subprocess.Popen(cmd, env=env)
         try:
             proc.wait()
         except:
