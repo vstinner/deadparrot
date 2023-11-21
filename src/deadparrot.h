@@ -17,9 +17,15 @@ PyObject* DeadPyEval_CallObjectWithKeywords(
     PyObject *args,
     PyObject *kwargs);
 
+PyObject* DeadPyCFunction_Call(
+    PyObject *callable,
+    PyObject *args,
+    PyObject *kwargs);
+
 #if PY_VERSION_HEX >= 0x030D00A1 && !defined(DeadPy_NO_ALIAS)
 #  define PyEval_CallObject DeadPyEval_CallObject
 #  define PyEval_CallObjectWithKeywords DeadPyEval_CallObjectWithKeywords
+#  define PyCFunction_Call DeadPyCFunction_Call
 #endif
 
 // --- Eval ------------------------------------------------------------------

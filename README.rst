@@ -19,6 +19,7 @@ Functions
 
 Functions exported by the deadparrot library:
 
+* PyCFunction_Call()
 * PyEval_CallObject()
 * PyEval_CallObjectWithKeywords()
 * PyEval_InitThreads()
@@ -62,7 +63,6 @@ Unsupported C API
 Removed in Python 3.13
 ----------------------
 
-* PyCFunction_Call()
 * PyEval_AcquireLock()
 * PyEval_CallFunction()
 * PyEval_CallMethod()

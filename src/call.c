@@ -49,3 +49,14 @@ DeadPyEval_CallObject(PyObject *callable, PyObject *args)
     return PyEval_CallObject(callable, args);
 #endif
 }
+
+
+PyObject*
+DeadPyCFunction_Call(PyObject *callable, PyObject *args, PyObject *kwargs)
+{
+#if PY_VERSION_HEX >= 0x030D00A1
+    return PyObject_Call(callable, args, NULL);
+#else
+    return PyCFunction_Call(callable, args, kwargs);
+#endif
+}
