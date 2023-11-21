@@ -1,4 +1,4 @@
-#!/usr/bin/python3 -u
+#!/usr/bin/env python3
 """
 Run the test suite on multiple Python versions.
 
@@ -51,7 +51,7 @@ def run_tests_exe(executable, verbose, tested):
 
     # Don't use realpath() for the executed command to support virtual
     # environments
-    cmd = [executable, TEST_SCRIPT]
+    cmd = [executable, "-u", TEST_SCRIPT]
     if verbose:
         cmd.append("--verbose")
     run_command(cmd, True)
