@@ -8,7 +8,9 @@ except ImportError:
 
 LIBRARY = "deadparrot"
 TEST_DIR = os.path.dirname(__file__)
-SRC_DIR = os.path.join(TEST_DIR , '..', 'src')
+SRC_DIR = os.path.normpath(os.path.join(TEST_DIR , '..', 'src'))
+LIBPARROT_LIBDIR = os.path.join(SRC_DIR, 'build')
+LIBPARROT_INCDIR = SRC_DIR
 CFLAGS = [
     # Treat warnings as error
     '-Werror',
@@ -27,8 +29,8 @@ CFLAGS = [
 def main():
     sources = [os.path.join(TEST_DIR, 'test_deadparrot_cext.c')]
     cflags = list(CFLAGS)
-    cflags.extend(('-I', SRC_DIR))
-    ldflags = ["-L", SRC_DIR]
+    cflags.extend(('-I', LIBPARROT_INCDIR))
+    ldflags = ["-L", LIBPARROT_LIBDIR]
     ext = Extension(
         'test_deadparrot_cext',
         sources=sources,

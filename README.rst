@@ -20,3 +20,11 @@ Support Python 2.7 and Python 3.6-3.13. PyPy is not supported.
 This project is distributed under the `Zero Clause BSD (0BSD) license
 <https://opensource.org/licenses/0BSD>`_ and is covered by the `PSF Code of
 Conduct <https://www.python.org/psf/codeofconduct/>`_.
+
+cmake 3.5 or newer is required to build libparrot. Build command::
+
+    cd src
+    mkdir build
+    cd build
+    cmake ..
+    make

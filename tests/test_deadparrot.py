@@ -32,9 +32,16 @@ def display_title(title):
     sys.stdout.flush()
 
 
-def build_ext(verbose):
+def rmtree(path, verbose):
     if os.path.exists("build"):
         shutil.rmtree("build")
+
+
+def build_test_cext(module_name, verbose):
+    if verbose:
+        display_title("Build %s extensions" % module_name)
+    os.chdir(TEST_DIR)
+    rmtree("build", verbose)
     cmd = [sys.executable, "setup.py", "build"]
     run_command(cmd, verbose)
 
@@ -156,6 +163,25 @@ def parse_args():
     return parser.parse_args()
 
 
+def build_libdeadparrot(verbose):
+    if verbose:
+        display_title("Build deadparrot library")
+    os.chdir(SRC_DIR)
+    build_dir = "build"
+    rmtree(build_dir, verbose)
+    os.mkdir(build_dir)
+    os.chdir(build_dir)
+
+    cmd = ["cmake", ".."]
+    ver = sys.version_info
+    python = "%s.%s" % (ver.major, ver.minor)
+    cmd.append('-DPython_VERSION=%s' % python)
+
+    run_command(cmd, verbose)
+    run_command(["make"], verbose)
+    return os.getcwd()
+
+
 def main():
     args = parse_args()
     verbose = args.verbose
@@ -166,19 +192,11 @@ def main():
     if build:
         script = os.path.abspath(__file__)
 
-        if verbose:
-            display_title("Build deadparrot library")
-        os.chdir(SRC_DIR)
-        run_command(["make", "clean"], verbose)
-        run_command(["make"], verbose)
-        library_path = SRC_DIR
+        library_path = build_libdeadparrot(verbose)
         if verbose:
             print()
 
-        if verbose:
-            display_title("Build %s extensions" % module_name)
-        os.chdir(TEST_DIR)
-        build_dir = build_ext(verbose)
+        build_dir = build_test_cext(module_name, verbose)
         sys.path.append(build_dir)
         if verbose:
             print()
