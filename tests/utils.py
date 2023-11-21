@@ -1,5 +1,21 @@
+import os.path
 import subprocess
 import sys
+
+
+MS_WINDOWS = (sys.platform == 'win32')
+MSVC = MS_WINDOWS
+CMAKE_CONFIG = 'Release'
+
+TEST_DIR = os.path.abspath(os.path.dirname(__file__))
+SRC_DIR = os.path.normpath(os.path.join(TEST_DIR , '..', 'src'))
+LIBPARROT = "deadparrot"
+if not MSVC:
+    LIBPARROT_LIBDIR = os.path.join(SRC_DIR, 'build')
+else:
+    # MSVC
+    LIBPARROT_LIBDIR = os.path.join(SRC_DIR, 'build', CMAKE_CONFIG)
+LIBPARROT_INCDIR = SRC_DIR
 
 
 def command_stdout(cmd, **kw):
@@ -21,13 +37,13 @@ def command_stdout(cmd, **kw):
         return (proc.returncode, stdout)
 
 
-def run_command(cmd, verbose=False):
+def run_command(cmd, verbose=False, check=True):
     if not verbose:
         exitcode, stdout = command_stdout(cmd)
-        if exitcode:
+        if check and exitcode:
             print(stdout.rstrip())
             sys.exit(exitcode)
-        return
+        return exitcode
 
     if hasattr(subprocess, 'run'):
         proc = subprocess.run(cmd)
@@ -41,5 +57,6 @@ def run_command(cmd, verbose=False):
             raise
 
     exitcode = proc.returncode
-    if exitcode:
+    if check and exitcode:
         sys.exit(exitcode)
+    return exitcode

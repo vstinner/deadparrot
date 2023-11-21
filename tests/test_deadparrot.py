@@ -15,11 +15,7 @@ except ImportError:
     faulthandler = None
 
 # test.utils
-from utils import run_command
-
-
-TEST_DIR = os.path.abspath(os.path.dirname(__file__))
-SRC_DIR = os.path.abspath(os.path.normpath(os.path.join(TEST_DIR, "..", "src")))
+from utils import run_command, SRC_DIR, TEST_DIR, LIBPARROT_LIBDIR
 
 
 def display_title(title):
@@ -37,10 +33,25 @@ def rmtree(path, verbose):
         shutil.rmtree("build")
 
 
+def install_setuptools(verbose):
+    cmd = [sys.executable, "-c", "import setuptools"]
+    exitcode = run_command(cmd, verbose=False, check=False)
+    if not exitcode:
+        # setuptools is already installed
+        return
+
+    cmd = [sys.executable, "-m", "ensurepip", "--user"]
+    run_command(cmd, verbose)
+
+    cmd = [sys.executable, "-m", "pip", "install", "setuptools"]
+    run_command(cmd, verbose)
+
+
 def build_test_cext(module_name, verbose):
     if verbose:
         display_title("Build %s extensions" % module_name)
     os.chdir(TEST_DIR)
+
     rmtree("build", verbose)
     cmd = [sys.executable, "setup.py", "build"]
     run_command(cmd, verbose)
@@ -167,19 +178,29 @@ def build_libdeadparrot(verbose):
     if verbose:
         display_title("Build deadparrot library")
     os.chdir(SRC_DIR)
-    build_dir = "build"
+
+    build_dir = os.path.abspath("build")
+    #config = "Debug"
+    config = "Release"
+
     rmtree(build_dir, verbose)
-    os.mkdir(build_dir)
-    os.chdir(build_dir)
 
-    cmd = ["cmake", ".."]
+    # Configure
     ver = sys.version_info
-    python = "%s.%s" % (ver.major, ver.minor)
-    cmd.append('-DPython_VERSION=%s' % python)
-
+    Python_VERSION = "%s.%s" % (ver.major, ver.minor)
+    cmd = [
+        "cmake",
+        "-B", build_dir,
+        "-D", "CMAKE_BUILD_TYPE=%s" % config,
+        "-D", "Python_VERSION=%s" % Python_VERSION,
+    ]
     run_command(cmd, verbose)
-    run_command(["make"], verbose)
-    return os.getcwd()
+
+    # Build
+    cmd = ["cmake", "--build", build_dir, "--config", config]
+    run_command(cmd, verbose)
+
+    return LIBPARROT_LIBDIR
 
 
 def main():
@@ -191,6 +212,9 @@ def main():
 
     if build:
         script = os.path.abspath(__file__)
+
+        if sys.version_info >= (3, 12):
+            install_setuptools(verbose)
 
         library_path = build_libdeadparrot(verbose)
         if verbose:
