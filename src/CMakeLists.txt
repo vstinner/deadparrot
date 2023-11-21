@@ -12,6 +12,7 @@ else()
   find_package (Python COMPONENTS Development)
 endif()
 include_directories(${Python_INCLUDE_DIRS})
+link_directories(${Python_LIBRARY_DIRS})
 
 add_library(${PROJECT_NAME} SHARED
     call.c
