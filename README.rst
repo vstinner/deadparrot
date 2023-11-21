@@ -24,12 +24,9 @@ Conduct <https://www.python.org/psf/codeofconduct/>`_.
 cmake 3.5 or newer is required to build libparrot. Build command::
 
     cd src
-    mkdir build
-    cd build
-    cmake ..
-    make
+    cmake -B build/ -D CMAKE_BUILD_TYPE=Release
+    cmake --build build --config Release
 
-Install in a specific directory::
+Change the destination to install to a specific directory::
 
-    cmake .. -D CMAKE_INSTALL_PREFIX=/path/to/custom/prefix
-    make install
+    cmake -B build/ -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/path/to/custom/prefix
