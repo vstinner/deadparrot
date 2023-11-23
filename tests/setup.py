@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup, Extension
 from utils import (
-    MSVC, TEST_DIR,
+    MSVC, TEST_DIR, DEBUG,
     LIBPARROT, LIBPARROT_LIBDIR, LIBPARROT_INCDIR)
 
 
@@ -23,6 +23,8 @@ if not MSVC:
         # Use C99
         '-std=c99',
     ]
+    if DEBUG:
+        CFLAGS.extend(("-Og", "-ggdb"))
 else:
     # Windows
     CFLAGS = []

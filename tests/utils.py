@@ -3,9 +3,12 @@ import subprocess
 import sys
 
 
+DEBUG = False
+
+
 MS_WINDOWS = (sys.platform == 'win32')
 MSVC = MS_WINDOWS
-CMAKE_CONFIG = 'Release'
+CMAKE_CONFIG = 'Debug' if DEBUG else 'Release'
 
 TEST_DIR = os.path.abspath(os.path.dirname(__file__))
 SRC_DIR = os.path.normpath(os.path.join(TEST_DIR , '..', 'src'))

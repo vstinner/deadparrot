@@ -15,7 +15,12 @@ except ImportError:
     faulthandler = None
 
 # test.utils
-from utils import run_command, MS_WINDOWS, SRC_DIR, TEST_DIR, LIBPARROT_LIBDIR
+from utils import (
+    run_command, MS_WINDOWS, SRC_DIR, TEST_DIR,
+    LIBPARROT_LIBDIR, CMAKE_CONFIG, DEBUG)
+
+
+GDB = False
 
 
 def display_title(title):
@@ -173,8 +178,7 @@ def build_libdeadparrot(verbose):
     os.chdir(SRC_DIR)
 
     build_dir = os.path.abspath("build")
-    #config = "Debug"
-    config = "Release"
+    config = CMAKE_CONFIG
 
     rmtree(build_dir, verbose)
 
@@ -227,6 +231,8 @@ def main():
             "--cext-dir", build_dir]
         if args.verbose:
             cmd.append('--verbose')
+        if GDB:
+            cmd = ["gdb", "--args"] + cmd
         run_command(cmd, verbose=True, env=env)
     else:
         if MS_WINDOWS:

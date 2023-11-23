@@ -21,66 +21,95 @@
 IGNORE_DEPR_WARNINGS
 
 
+static void
+check_call_result(PyObject *res, const char *str)
+{
+    assert(res != NULL);
+    assert(PyUnicode_Check(res));
+    assert(PyUnicode_CompareWithASCIIString(res, str) == 0);
+    assert(!PyErr_Occurred());
+}
+
+
 static PyObject *
 test_call(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 {
-    PyObject *func = (PyObject*)&PyUnicode_Type;
-    PyObject *res;
+    PyObject *str_upper = NULL, *abc = NULL, *upper_args = NULL;
+    PyObject *strip_obj = NULL, *strip_args = NULL;
+
+    str_upper = PyObject_GetAttrString((PyObject*)&PyUnicode_Type, "upper");
+    if (str_upper == NULL) {
+        goto error;
+    }
+
+    abc = PyUnicode_FromString("abc");
+    if (abc == NULL) {
+        goto error;
+    }
+
+    upper_args = PyTuple_Pack(1, abc);
+    if (upper_args == NULL) {
+        goto error;
+    }
+
+    strip_obj = PyUnicode_FromString(" spaces ");
+    if (strip_obj == NULL) {
+        goto error;
+    }
+
+    strip_args = Py_BuildValue("(s)", " ");
+    if (strip_args == NULL) {
+        goto error;
+    }
 
     // test PyEval_CallObject()
-    res = PyEval_CallObject(func, NULL);
-    assert(res != NULL);
+    PyObject *res = PyEval_CallObject(str_upper, upper_args);
+    check_call_result(res, "ABC");
     Py_DECREF(res);
 
     // test PyEval_CallObjectWithKeywords()
-    res = PyEval_CallObjectWithKeywords(func, NULL, NULL);
-    assert(res != NULL);
+    res = PyEval_CallObjectWithKeywords(str_upper, upper_args, NULL);
+    check_call_result(res, "ABC");
     Py_DECREF(res);
 
     // test PyCFunction_Call()
     {
-        PyObject *abc = PyUnicode_FromString("abc");
-        if (abc == NULL) {
-            return NULL;
-        }
-        PyObject *meth = PyObject_GetAttrString(abc, "upper");
-        Py_DECREF(abc);
+        PyObject *meth = PyObject_GetAttrString(strip_obj, "strip");
         if (meth == NULL) {
-            return NULL;
+            goto error;
         }
         assert(PyCFunction_Check(meth));
 
-        PyObject *args = PyTuple_New(0);
-        if (args == NULL) {
-            Py_DECREF(meth);
-            return NULL;
-        }
-        res = PyCFunction_Call(meth, args, NULL);
+        res = PyCFunction_Call(meth, strip_args, NULL);
         Py_DECREF(meth);
-        Py_DECREF(args);
-        assert(res != NULL);
+        check_call_result(res, "spaces");
         Py_DECREF(res);
     }
 
     // test PyEval_CallFunction()
-    res = PyEval_CallFunction(func, "()");
-    assert(res != NULL);
+    res = PyEval_CallFunction(str_upper, "(O)", abc);
+    check_call_result(res, "ABC");
     Py_DECREF(res);
 
     // test PyEval_CallMethod()
-    {
-        PyObject *obj = PyUnicode_FromString("abc");
-        if (obj == NULL) {
-            return NULL;
-        }
+    res = PyEval_CallMethod(strip_obj, "strip", "(s)", " ");
+    check_call_result(res, "spaces");
+    Py_DECREF(res);
 
-        res = PyEval_CallMethod(obj, "upper", "()");
-        Py_DECREF(obj);
-        assert(res != NULL);
-        Py_DECREF(res);
-    }
-
+    Py_DECREF(str_upper);
+    Py_DECREF(abc);
+    Py_DECREF(upper_args);
+    Py_DECREF(strip_obj);
+    Py_DECREF(strip_args);
     Py_RETURN_NONE;
+
+error:
+    Py_XDECREF(str_upper);
+    Py_XDECREF(abc);
+    Py_XDECREF(upper_args);
+    Py_XDECREF(strip_obj);
+    Py_XDECREF(strip_args);
+    return NULL;
 }
 
 
