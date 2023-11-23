@@ -60,8 +60,8 @@ Change the destination to install to a specific directory::
     cmake -B build/ -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/custom/prefix
 
 
-Unsupported C API
-=================
+Unsupported removed C API functions
+===================================
 
 Removed in Python 3.13
 ----------------------
@@ -154,7 +154,6 @@ Removed in Python 3.10
 * PySymtable_Build()
 * PySymtable_BuildObject()
 * PySymtable_Free()
-* PyThreadState.use_tracing member
 * PyUnicode_AsUnicodeCopy()
 * Py_ALLOW_RECURSION
 * Py_END_ALLOW_RECURSION
@@ -168,13 +167,10 @@ Removed in Python 3.10
 * Py_UNICODE_strncmp()
 * Py_UNICODE_strncpy()
 * Py_UNICODE_strrchr()
-* _Py_CheckRecursionLimit variable
 
 Removed in Python 3.9
 ---------------------
 
-* PyTypeObject.tp_print member
-* _PyRuntime.getframe member
 * PyAsyncGen_ClearFreeLists()
 * PyCFunction_ClearFreeList()
 * PyCmpWrapper_Type()
@@ -195,9 +191,9 @@ Removed in Python 3.9
 * _PyAIterWrapper_Type()
 * _PyBytes_InsertThousandsGrouping()
 * _PyBytes_InsertThousandsGroupingLocale()
-* _PyFloat_Digits()
-* _PyFloat_DigitsInit()
-* _PyFloat_Repr()
+* _PyFloat_Digits(): implementation was removed in Python 2.6
+* _PyFloat_DigitsInit(): implementation was removed in Python 2.6
+* _PyFloat_Repr(): implementation was removed in Python 3.1
 * _PyThreadState_GetFrame()
 * _PyUnicode_ClearStaticStrings()
 * _Py_InitializeFromArgs()
@@ -209,25 +205,9 @@ Removed in Python 3.8
 * PyByteArray_Init()
 * PyByteArray_Fini()
 
-Other changes:
-
-* Heap type instances now store a strong reference to the type. Their dealloc
-  function must call ``Py_DECREF(Py_TYPE(obj));``.
-
-Removed in Python 3.7
----------------------
-
-* PyExc_RecursionErrorInst variable
-
-Removed in Python 3.4
----------------------
-
-* PyThreadState.tick_counter member
-
 Removed in Python 3.2
 ---------------------
 
-* PyCObject_Type variable
 * PyCObject_AsVoidPtr()
 * PyCObject_Check()
 * PyCObject_FromVoidPtr()
@@ -256,3 +236,40 @@ Removed in Python 3.0
 * PyNumber_CoerceEx()
 * WITH_CYCLE_GC
 * Many other C API removals.
+
+
+Unsupported removed C API
+=========================
+
+Removed in Python 3.10
+----------------------
+
+* PyThreadState.use_tracing member
+* _Py_CheckRecursionLimit variable
+
+Removed in Python 3.9
+---------------------
+
+* PyTypeObject.tp_print member
+* _PyRuntime.getframe member
+
+Removed in Python 3.8
+---------------------
+
+* Heap type instances now store a strong reference to the type. Their dealloc
+  function must call ``Py_DECREF(Py_TYPE(obj));``.
+
+Removed in Python 3.7
+---------------------
+
+* PyExc_RecursionErrorInst variable
+
+Removed in Python 3.4
+---------------------
+
+* PyThreadState.tick_counter member
+
+Removed in Python 3.2
+---------------------
+
+* PyCObject_Type variable
