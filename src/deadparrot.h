@@ -33,7 +33,7 @@ PyObject* DeadPyEval_CallMethod(
     const char *format,
     ...);
 
-#if PY_VERSION_HEX >= 0x030D00A1 && !defined(DeadPy_NO_ALIAS)
+#if PY_VERSION_HEX >= 0x030D0000 && !defined(DeadPy_NO_ALIAS)
 #  define PyEval_CallObject DeadPyEval_CallObject
 #  define PyEval_CallObjectWithKeywords DeadPyEval_CallObjectWithKeywords
 #  define PyCFunction_Call DeadPyCFunction_Call
@@ -45,7 +45,7 @@ PyObject* DeadPyEval_CallMethod(
 
 void DeadPyEval_InitThreads(void);
 
-#if PY_VERSION_HEX >= 0x030D00A1 && !defined(DeadPy_NO_ALIAS)
+#if PY_VERSION_HEX >= 0x030D0000 && !defined(DeadPy_NO_ALIAS)
 #  define PyEval_InitThreads DeadPyEval_InitThreads
 #endif
 
@@ -79,9 +79,11 @@ DeadPy_UNICODE DeadPyUnicode_GetMax(void);
 #  define PyUnicode_GetMax DeadPyUnicode_GetMax
 #endif
 
+#if PY_VERSION_HEX >= 0x03000000
 void DeadPyUnicode_InternImmortal(PyObject **p);
-#if PY_VERSION_HEX >= 0x030D00A1 && !defined(DeadPy_NO_ALIAS)
+#if PY_VERSION_HEX >= 0x030C0000 && !defined(DeadPy_NO_ALIAS)
 #  define PyUnicode_InternImmortal DeadPyUnicode_InternImmortal
+#endif
 #endif
 
 

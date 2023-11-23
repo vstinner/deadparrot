@@ -26,7 +26,14 @@ check_call_result(PyObject *res, const char *str)
 {
     assert(res != NULL);
     assert(PyUnicode_Check(res));
+#if PY_VERSION_HEX >= 0x03000000
     assert(PyUnicode_CompareWithASCIIString(res, str) == 0);
+#else
+    PyObject *obj = PyUnicode_FromString(str);
+    assert(obj != NULL);
+    assert(PyUnicode_Compare(res, obj) == 0);
+    Py_DECREF(obj);
+#endif
     assert(!PyErr_Occurred());
 }
 
@@ -147,7 +154,7 @@ test_unicode(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
     if (str == NULL) {
         return NULL;
     }
-    DeadPyUnicode_InternImmortal(&str);
+    PyUnicode_InternImmortal(&str);
     assert(str != NULL);
 #endif
 
