@@ -41,6 +41,18 @@ PyObject* DeadPyEval_CallMethod(
 #  define PyEval_CallMethod DeadPyEval_CallMethod
 #endif
 
+
+#if PY_VERSION_HEX >= 0x03060000
+PyObject* _DeadPyObject_FastCall(
+    PyObject *func,
+    PyObject *const *args,
+    Py_ssize_t nargs);
+#if PY_VERSION_HEX >= 0x030D0000 && !defined(DeadPy_NO_ALIAS)
+#  define _PyObject_FastCall _DeadPyObject_FastCall
+#endif
+#endif
+
+
 // --- Eval ------------------------------------------------------------------
 
 void DeadPyEval_InitThreads(void);

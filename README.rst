@@ -17,7 +17,7 @@ Conduct <https://www.python.org/psf/codeofconduct/>`_.
 Functions
 =========
 
-Functions exported by the deadparrot library:
+Functions provided by the deadparrot library:
 
 * PyCFunction_Call()
 * PyEval_CallFunction()
@@ -30,6 +30,7 @@ Functions exported by the deadparrot library:
 * PyUnicode_GetMax()
 * PyUnicode_InternImmortal(): Python >= 3.0
 * _PyInterpreterState_Get(): Python >= 3.8
+* _PyObject_FastCall(): Python >= 3.6
 
 
 Tests
@@ -85,7 +86,6 @@ Removed in Python 3.13
 * Py_SetStandardStreamEncoding()
 * Py_TRASHCAN_SAFE_BEGIN
 * Py_TRASHCAN_SAFE_END
-* _PyObject_FastCall()
 * _Py_SetProgramFullPath()
 
 Removed in Python 3.12

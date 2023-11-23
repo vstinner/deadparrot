@@ -103,6 +103,14 @@ test_call(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
     check_call_result(res, "spaces");
     Py_DECREF(res);
 
+#if PY_VERSION_HEX >= 0x03060000
+    // _PyObject_FastCall()
+    PyObject* fast_args[1] = {abc};
+    res = _PyObject_FastCall(str_upper, fast_args, 1);
+    check_call_result(res, "ABC");
+    Py_DECREF(res);
+#endif
+
     Py_DECREF(str_upper);
     Py_DECREF(abc);
     Py_DECREF(upper_args);

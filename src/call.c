@@ -122,3 +122,16 @@ DeadPyEval_CallMethod(PyObject *obj, const char *name, const char *format, ...)
     Py_DECREF(args);
     return res;
 }
+
+
+#if PY_VERSION_HEX >= 0x03060000
+PyObject *
+_DeadPyObject_FastCall(PyObject *func, PyObject *const *args, Py_ssize_t nargs)
+{
+#if PY_VERSION_HEX >= 0x030D00A1
+    return PyObject_Vectorcall(func, args, (size_t)nargs, NULL);
+#else
+    return _PyObject_FastCall(func, (PyObject **)args, nargs);
+#endif
+}
+#endif
