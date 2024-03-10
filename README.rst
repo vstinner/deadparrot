@@ -14,6 +14,11 @@ This project is distributed under the `Zero Clause BSD (0BSD) license
 <https://opensource.org/licenses/0BSD>`_ and is covered by the `PSF Code of
 Conduct <https://www.python.org/psf/codeofconduct/>`_.
 
+See also the `pythoncapi-compat project
+<https://pythoncapi-compat.readthedocs.io/>`_: header file providing new
+functions to old Python versions.
+
+
 Functions
 =========
 
@@ -253,7 +258,7 @@ Removed in Python 3.9
 * PyTypeObject.tp_print member
 * _PyRuntime.getframe member
 
-Removed in Python 3.8
+Changed in Python 3.8
 ---------------------
 
 * Heap type instances now store a strong reference to the type. Their dealloc
