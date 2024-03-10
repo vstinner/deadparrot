@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 
-DEBUG = False
+DEBUG = True
 
 
 MS_WINDOWS = (sys.platform == 'win32')

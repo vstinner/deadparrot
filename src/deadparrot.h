@@ -78,6 +78,18 @@ void DeadPyEval_InitThreads(void);
 #endif
 
 
+// --- Type ------------------------------------------------------------------
+
+PyObject* DeadPyType_FromMetaclass(
+    PyTypeObject *metaclass,
+    PyObject *module,
+    PyType_Spec *spec,
+    PyObject *bases_in);
+
+#if PY_VERSION_HEX <= 0x030C0000 && !defined(DeadPy_NO_ALIAS)
+#  define PyType_FromMetaclass DeadPyType_FromMetaclass
+#endif
+
 // --- Unicode ---------------------------------------------------------------
 
 #if PY_VERSION_HEX >= 0x03030000

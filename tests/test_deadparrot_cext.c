@@ -2,6 +2,7 @@
 #undef NDEBUG
 
 #include <Python.h>
+#include <structmember.h>         // PyMemberDef
 #include "deadparrot.h"
 #include "private.h"
 
@@ -170,11 +171,72 @@ test_unicode(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 }
 
 
+static PyObject *
+test_type(PyObject *module, PyObject *Py_UNUSED(args))
+{
+    PyType_Slot HeapCTypeMetaclass_slots[] = {
+        {0},
+    };
+    PyType_Spec HeapCTypeMetaclass_spec = {
+        "HeapCTypeMetaclass",
+        sizeof(PyHeapTypeObject),
+        sizeof(PyMemberDef),
+        Py_TPFLAGS_DEFAULT,
+        HeapCTypeMetaclass_slots
+    };
+
+    // test PyType_FromMetaclass() to create a metaclass
+    PyTypeObject *metaclass = (PyTypeObject*)PyType_FromMetaclass(
+        &PyType_Type, module,
+        &HeapCTypeMetaclass_spec, (PyObject *)&PyType_Type);
+    if (metaclass == NULL) {
+        return NULL;
+    }
+
+    assert(Py_TYPE(metaclass) == &PyType_Type);
+    assert(metaclass->tp_base == &PyType_Type);
+    //assert(metaclass->tp_base == &PyBaseObject_Type);
+    assert(strcmp(metaclass->tp_name, "HeapCTypeMetaclass") == 0);
+
+    PyType_Slot HeapCTypeViaMetaclass_slots[] = {
+        {0},
+    };
+    PyType_Spec HeapCTypeViaMetaclass_spec = {
+        "HeapCTypeViaMetaclass",
+        sizeof(PyObject),
+        0,
+        Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
+        HeapCTypeViaMetaclass_slots
+    };
+
+
+    // test PyType_FromMetaclass() to create a type from a metaclass
+    PyTypeObject *mytype = (PyTypeObject*)PyType_FromMetaclass(
+        metaclass, module,
+        &HeapCTypeViaMetaclass_spec, NULL);
+    if (mytype == NULL) {
+        Py_DECREF(metaclass);
+        return NULL;
+    }
+    assert(!PyErr_Occurred());
+
+    assert(Py_TYPE(mytype) == metaclass);
+    assert(mytype->tp_base == &PyBaseObject_Type);
+    assert(strcmp(mytype->tp_name, "HeapCTypeViaMetaclass") == 0);
+
+    Py_DECREF(metaclass);
+    Py_DECREF(mytype);
+
+    Py_RETURN_NONE;
+}
+
+
 static struct PyMethodDef methods[] = {
     {"test_call", test_call, METH_NOARGS, NULL},
     {"test_eval", test_eval, METH_NOARGS, NULL},
     {"test_interp", test_interp, METH_NOARGS, NULL},
     {"test_unicode", test_unicode, METH_NOARGS, NULL},
+    {"test_type", test_type, METH_NOARGS, NULL},
     {NULL, NULL, 0, NULL}
 };
 
