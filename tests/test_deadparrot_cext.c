@@ -133,6 +133,7 @@ static PyObject *
 test_frame(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
 {
     PyThreadState *tstate = PyThreadState_Get();
+    (void)tstate;
 
     // test PyThreadState_GetFrame()
     PyFrameObject *frame = PyThreadState_GetFrame(tstate);
@@ -142,38 +143,46 @@ test_frame(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
     }
 
     // test PyFrame_GetCode()
-    PyCodeObject *code = PyFrame_GetCode(frame);
-    assert(code != _Py_NULL);
-    assert(PyCode_Check(code));
+    {
+        PyCodeObject *code = PyFrame_GetCode(frame);
+        assert(code != _Py_NULL);
+        assert(PyCode_Check(code));
+        Py_DECREF(code);
+    }
 
     // PyFrame_GetBack()
-    PyFrameObject* back = PyFrame_GetBack(frame);
-    if (back != _Py_NULL) {
-        assert(PyFrame_Check(back));
+    {
+        PyFrameObject* back = PyFrame_GetBack(frame);
+        if (back != _Py_NULL) {
+            assert(PyFrame_Check(back));
+        }
+        Py_XDECREF(back);
     }
 
     // test PyFrame_GetLocals()
-    PyObject *locals = PyFrame_GetLocals(frame);
-    assert(locals != _Py_NULL);
-    assert(PyDict_Check(locals));
+    {
+        PyObject *locals = PyFrame_GetLocals(frame);
+        assert(locals != _Py_NULL);
+        assert(PyDict_Check(locals));
 
-    // test PyFrame_GetGlobals()
-    PyObject *globals = PyFrame_GetGlobals(frame);
-    assert(globals != _Py_NULL);
-    assert(PyDict_Check(globals));
+        // test PyFrame_GetGlobals()
+        PyObject *globals = PyFrame_GetGlobals(frame);
+        assert(globals != _Py_NULL);
+        assert(PyDict_Check(globals));
 
-    // test PyFrame_GetBuiltins()
-    PyObject *builtins = PyFrame_GetBuiltins(frame);
-    assert(builtins != _Py_NULL);
-    assert(PyDict_Check(builtins));
+        // test PyFrame_GetBuiltins()
+        PyObject *builtins = PyFrame_GetBuiltins(frame);
+        assert(builtins != _Py_NULL);
+        assert(PyDict_Check(builtins));
 
-    assert(locals != globals);
-    assert(globals != builtins);
-    assert(builtins != locals);
+        assert(locals != globals);
+        assert(globals != builtins);
+        assert(builtins != locals);
 
-    Py_DECREF(locals);
-    Py_DECREF(globals);
-    Py_DECREF(builtins);
+        Py_DECREF(locals);
+        Py_DECREF(globals);
+        Py_DECREF(builtins);
+    }
 
     // test PyFrame_GetLasti()
     int lasti = PyFrame_GetLasti(frame);
