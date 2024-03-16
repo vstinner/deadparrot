@@ -5,9 +5,7 @@ extern "C" {
 #endif
 
 #include <Python.h>
-#if PY_VERSION_HEX < 0x030A0000
-#  include <frameobject.h>
-#endif
+#include <frameobject.h>
 
 // --- Misc ------------------------------------------------------------------
 
