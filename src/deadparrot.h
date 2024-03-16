@@ -61,6 +61,26 @@ DeadPyAPI_FUNC(void) DeadPy_SET_SIZE(PyVarObject *obj, Py_ssize_t size);
 #define Py_SET_SIZE(obj, size) DeadPy_SET_SIZE(_DeadPy_CAST(PyVarObject*, (obj)), (size))
 #endif
 
+DeadPyAPI_FUNC(int) DeadPy_Is(PyObject *x, PyObject *y);
+#if PY_VERSION_HEX < 0x030A00B1 && !defined(Py_Is)
+#  define Py_Is(x, y) DeadPy_Is((x), (y))
+#endif
+
+DeadPyAPI_FUNC(int) DeadPy_IsNone(PyObject *x);
+#if PY_VERSION_HEX < 0x030A00B1 && !defined(Py_IsNone)
+#  define Py_IsNone(x) DeadPy_Is((x), Py_None)
+#endif
+
+DeadPyAPI_FUNC(int) DeadPy_IsFalse(PyObject *x);
+#if (PY_VERSION_HEX < 0x030A00B1 || defined(PYPY_VERSION)) && !defined(Py_IsFalse)
+#  define Py_IsFalse(x) DeadPy_Is((x), Py_False)
+#endif
+
+DeadPyAPI_FUNC(int) DeadPy_IsTrue(PyObject *x);
+#if (PY_VERSION_HEX < 0x030A00B1 || defined(PYPY_VERSION)) && !defined(Py_IsTrue)
+#  define Py_IsTrue(x) DeadPy_Is((x), Py_True)
+#endif
+
 
 // --- Call ------------------------------------------------------------------
 

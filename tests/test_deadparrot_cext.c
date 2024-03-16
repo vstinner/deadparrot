@@ -60,6 +60,40 @@ test_object(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
 }
 
 
+static PyObject *
+test_py_is(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
+{
+    PyObject *o_none = Py_None;
+    PyObject *o_true = Py_True;
+    PyObject *o_false = Py_False;
+    PyObject *obj = PyList_New(0);
+    if (obj == _Py_NULL) {
+        return _Py_NULL;
+    }
+
+    /* test Py_Is() */
+    assert(Py_Is(obj, obj));
+    assert(!Py_Is(obj, o_none));
+
+    /* test Py_IsNone() */
+    assert(Py_IsNone(o_none));
+    assert(!Py_IsNone(obj));
+
+    /* test Py_IsTrue() */
+    assert(Py_IsTrue(o_true));
+    assert(!Py_IsTrue(o_false));
+    assert(!Py_IsTrue(obj));
+
+    /* testPy_IsFalse() */
+    assert(Py_IsFalse(o_false));
+    assert(!Py_IsFalse(o_true));
+    assert(!Py_IsFalse(obj));
+
+    Py_DECREF(obj);
+    Py_RETURN_NONE;
+}
+
+
 static void
 check_call_result(PyObject *res, const char *str)
 {
@@ -211,6 +245,7 @@ test_unicode(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 
 static struct PyMethodDef methods[] = {
     {"test_object", test_object, METH_NOARGS, NULL},
+    {"test_py_is", test_py_is, METH_NOARGS, _Py_NULL},
     {"test_call", test_call, METH_NOARGS, NULL},
     {"test_eval", test_eval, METH_NOARGS, NULL},
     {"test_interp", test_interp, METH_NOARGS, NULL},

@@ -28,3 +28,23 @@ void DeadPy_SET_SIZE(PyVarObject *obj, Py_ssize_t size)
 {
     obj->ob_size = size;
 }
+
+int DeadPy_Is(PyObject *x, PyObject *y)
+{
+    return (x == y);
+}
+
+int DeadPy_IsNone(PyObject *x)
+{
+    return (x == Py_None);
+}
+
+int DeadPy_IsFalse(PyObject *x)
+{
+    return (x == Py_False);
+}
+
+int DeadPy_IsTrue(PyObject *x)
+{
+    return (x == Py_True);
+}
