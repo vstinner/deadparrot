@@ -94,6 +94,101 @@ test_py_is(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
 }
 
 
+#ifndef PYPY_VERSION
+static void
+test_frame_getvar(PyFrameObject *frame)
+{
+    // Make the assumption that test_frame_getvar() is only called by
+    // _run_tests() of test_pythoncapi_compat.py and so that the "name"
+    // variable exists.
+
+    // test PyFrame_GetVar() and PyFrame_GetVarString()
+    PyObject *attr = PyUnicode_FromString("name");
+    assert(attr != _Py_NULL);
+    PyObject *name1 = PyFrame_GetVar(frame, attr);
+    Py_DECREF(attr);
+    assert(name1 != _Py_NULL);
+    Py_DECREF(name1);
+
+    PyObject *name2 = PyFrame_GetVarString(frame, "name");
+    assert(name2 != _Py_NULL);
+    Py_DECREF(name2);
+
+    // test PyFrame_GetVar() and PyFrame_GetVarString() NameError
+    PyObject *attr3 = PyUnicode_FromString("dontexist");
+    assert(attr3 != _Py_NULL);
+    PyObject *name3 = PyFrame_GetVar(frame, attr3);
+    Py_DECREF(attr3);
+    assert(name3 == _Py_NULL);
+    assert(PyErr_ExceptionMatches(PyExc_NameError));
+    PyErr_Clear();
+
+    PyObject *name4 = PyFrame_GetVarString(frame, "dontexist");
+    assert(name4 == _Py_NULL);
+    assert(PyErr_ExceptionMatches(PyExc_NameError));
+    PyErr_Clear();
+}
+
+static PyObject *
+test_frame(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
+{
+    PyThreadState *tstate = PyThreadState_Get();
+
+    // test PyThreadState_GetFrame()
+    PyFrameObject *frame = PyThreadState_GetFrame(tstate);
+    if (frame == _Py_NULL) {
+        PyErr_SetString(PyExc_AssertionError, "PyThreadState_GetFrame failed");
+        return _Py_NULL;
+    }
+
+    // test PyFrame_GetCode()
+    PyCodeObject *code = PyFrame_GetCode(frame);
+    assert(code != _Py_NULL);
+    assert(PyCode_Check(code));
+
+    // PyFrame_GetBack()
+    PyFrameObject* back = PyFrame_GetBack(frame);
+    if (back != _Py_NULL) {
+        assert(PyFrame_Check(back));
+    }
+
+    // test PyFrame_GetLocals()
+    PyObject *locals = PyFrame_GetLocals(frame);
+    assert(locals != _Py_NULL);
+    assert(PyDict_Check(locals));
+
+    // test PyFrame_GetGlobals()
+    PyObject *globals = PyFrame_GetGlobals(frame);
+    assert(globals != _Py_NULL);
+    assert(PyDict_Check(globals));
+
+    // test PyFrame_GetBuiltins()
+    PyObject *builtins = PyFrame_GetBuiltins(frame);
+    assert(builtins != _Py_NULL);
+    assert(PyDict_Check(builtins));
+
+    assert(locals != globals);
+    assert(globals != builtins);
+    assert(builtins != locals);
+
+    Py_DECREF(locals);
+    Py_DECREF(globals);
+    Py_DECREF(builtins);
+
+    // test PyFrame_GetLasti()
+    int lasti = PyFrame_GetLasti(frame);
+    assert(lasti >= 0);
+
+    // test PyFrame_GetVar() and PyFrame_GetVarString()
+    test_frame_getvar(frame);
+
+    // done
+    Py_DECREF(frame);
+    Py_RETURN_NONE;
+}
+#endif  // !defined(PYPY_VERSION)
+
+
 static void
 check_call_result(PyObject *res, const char *str)
 {
@@ -246,6 +341,9 @@ test_unicode(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 static struct PyMethodDef methods[] = {
     {"test_object", test_object, METH_NOARGS, NULL},
     {"test_py_is", test_py_is, METH_NOARGS, _Py_NULL},
+#ifndef PYPY_VERSION
+    {"test_frame", test_frame, METH_NOARGS, _Py_NULL},
+#endif
     {"test_call", test_call, METH_NOARGS, NULL},
     {"test_eval", test_eval, METH_NOARGS, NULL},
     {"test_interp", test_interp, METH_NOARGS, NULL},

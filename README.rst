@@ -24,15 +24,6 @@ Functions
 
 Functions provided by the deadparrot library.
 
-Object
-------
-
-* ``Py_NewRef()``
-* ``Py_SET_REFCNT()``
-* ``Py_SET_SIZE()``
-* ``Py_SET_TYPE()``
-* ``Py_XNewRef()``
-
 Call
 ----
 
@@ -42,6 +33,27 @@ Call
 * ``PyEval_CallObject()``
 * ``PyEval_CallObjectWithKeywords()``
 * ``_PyObject_FastCall()``: Python >= 3.6
+
+Frame
+-----
+
+* ``PyFrame_GetBack()``
+* ``PyFrame_GetBuiltins()``
+* ``PyFrame_GetCode()``
+* ``PyFrame_GetGlobals()``
+* ``PyFrame_GetLasti()``
+* ``PyFrame_GetLocals()``
+* ``PyFrame_GetVar()``
+* ``PyFrame_GetVarString()``
+
+Object
+------
+
+* ``Py_NewRef()``
+* ``Py_SET_REFCNT()``
+* ``Py_SET_SIZE()``
+* ``Py_SET_TYPE()``
+* ``Py_XNewRef()``
 
 Unicode
 -------

@@ -5,6 +5,9 @@ extern "C" {
 #endif
 
 #include <Python.h>
+#if PY_VERSION_HEX < 0x030A0000
+#  include <frameobject.h>
+#endif
 
 // --- Misc ------------------------------------------------------------------
 
@@ -25,7 +28,7 @@ extern "C" {
 
 // _DeadPy_CAST() and _DeadPyObject_CAST()
 #ifdef _Py_CAST
-#  define _DeadPy_CAST(type, expr) _Py_CAST((type), (expr))
+#  define _DeadPy_CAST(type, expr) _Py_CAST(type, expr)
 #else
 #  define _DeadPy_CAST(type, expr) ((type)(expr))
 #endif
@@ -147,10 +150,18 @@ DeadPyAPI_FUNC(void) DeadPyEval_InitThreads(void);
 #endif
 
 
-// --- Interpreter -----------------------------------------------------------
+// --- PyInterpreterState ----------------------------------------------------
 
 #if PY_VERSION_HEX >= 0x030D0000 && !defined(_PyInterpreterState_Get)
 #  define _PyInterpreterState_Get PyInterpreterState_Get
+#endif
+
+
+// --- PyThreadState ---------------------------------------------------------
+
+DeadPyAPI_FUNC(PyFrameObject*) DeadPyThreadState_GetFrame(PyThreadState *tstate);
+#if PY_VERSION_HEX < 0x030900B1 && !defined(PYPY_VERSION)
+#define PyThreadState_GetFrame DeadPyThreadState_GetFrame
 #endif
 
 
@@ -174,6 +185,48 @@ DeadPyAPI_FUNC(void) DeadPyUnicode_InternImmortal(PyObject **p);
 #endif
 #endif
 
+
+// --- Frame -----------------------------------------------------------------
+
+DeadPyAPI_FUNC(PyCodeObject*) DeadPyFrame_GetCode(PyFrameObject *frame);
+#if PY_VERSION_HEX < 0x030900B1 || defined(PYPY_VERSION)
+#  define PyFrame_GetCode DeadPyFrame_GetCode
+#endif
+
+DeadPyAPI_FUNC(PyFrameObject*) DeadPyFrame_GetBack(PyFrameObject *frame);
+#if PY_VERSION_HEX < 0x030900B1 && !defined(PYPY_VERSION)
+#  define PyFrame_GetBack DeadPyFrame_GetBack
+#endif
+
+DeadPyAPI_FUNC(PyObject*) DeadPyFrame_GetLocals(PyFrameObject *frame);
+#if PY_VERSION_HEX < 0x030B00A7 && !defined(PYPY_VERSION)
+#  define PyFrame_GetLocals DeadPyFrame_GetLocals
+#endif
+
+DeadPyAPI_FUNC(PyObject*) DeadPyFrame_GetGlobals(PyFrameObject *frame);
+#if PY_VERSION_HEX < 0x030B00A7 && !defined(PYPY_VERSION)
+#  define PyFrame_GetGlobals DeadPyFrame_GetGlobals
+#endif
+
+DeadPyAPI_FUNC(PyObject*) DeadPyFrame_GetBuiltins(PyFrameObject *frame);
+#if PY_VERSION_HEX < 0x030B00A7 && !defined(PYPY_VERSION)
+#  define PyFrame_GetBuiltins DeadPyFrame_GetBuiltins
+#endif
+
+DeadPyAPI_FUNC(int) DeadPyFrame_GetLasti(PyFrameObject *frame);
+#if PY_VERSION_HEX < 0x030B00B1 && !defined(PYPY_VERSION)
+#  define PyFrame_GetLasti DeadPyFrame_GetLasti
+#endif
+
+DeadPyAPI_FUNC(PyObject*) DeadPyFrame_GetVar(PyFrameObject *frame, PyObject *name);
+#if PY_VERSION_HEX < 0x030C00A2 && !defined(PYPY_VERSION)
+#  define PyFrame_GetVar DeadPyFrame_GetVar
+#endif
+
+DeadPyAPI_FUNC(PyObject*) DeadPyFrame_GetVarString(PyFrameObject *frame, const char *name);
+#if PY_VERSION_HEX < 0x030C00A2 && !defined(PYPY_VERSION)
+#  define PyFrame_GetVarString DeadPyFrame_GetVarString
+#endif
 
 #ifdef __cplusplus
 }
