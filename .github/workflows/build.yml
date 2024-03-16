@@ -27,13 +27,26 @@ jobs:
           - "3.10"
           - "3.11"
           - "3.12"
+          - "3.13"
         include:
+          # Windows: test old and new Python stable supported versions
+          # Python 3.7 lacks os.add_dll_directory() used by tests.
+          - os: windows-latest
+            python: 3.8
           - os: windows-latest
             python: 3.12
-          - os: ubuntu-20.04
-            python: 3.6
+
+          # macOS: test old and new Python stable supported versions
+          # - os: macos-latest
+          #   python: 3.7
+          # - os: macos-latest
+          #   python: 3.12
+
+          # Ubuntu: test old unsupported Python versions
           - os: ubuntu-20.04
             python: 3.5
+          - os: ubuntu-20.04
+            python: 3.6
 
 
     steps:
