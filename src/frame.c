@@ -84,7 +84,7 @@ PyObject* DeadPyFrame_GetVar(PyFrameObject *frame, PyObject *name)
 #else
     PyObject *locals, *value;
 
-    locals = PyFrame_GetLocals(frame);
+    locals = DeadPyFrame_GetLocals(frame);
     if (locals == NULL) {
         return NULL;
     }
@@ -124,7 +124,7 @@ PyObject* DeadPyFrame_GetVarString(PyFrameObject *frame, const char *name)
     if (name_obj == NULL) {
         return NULL;
     }
-    value = PyFrame_GetVar(frame, name_obj);
+    value = DeadPyFrame_GetVar(frame, name_obj);
     Py_DECREF(name_obj);
     return value;
 #endif

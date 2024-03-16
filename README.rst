@@ -34,8 +34,8 @@ Call
 * ``PyEval_CallObjectWithKeywords()``
 * ``_PyObject_FastCall()``: Python >= 3.6
 
-Frame
------
+PyFrame
+-------
 
 * ``PyFrame_GetBack()``
 * ``PyFrame_GetBuiltins()``
@@ -46,8 +46,14 @@ Frame
 * ``PyFrame_GetVar()``
 * ``PyFrame_GetVarString()``
 
-Object
-------
+PyThreadState
+-------------
+
+* ``PyThreadState_GetFrame()``
+* ``PyThreadState_GetInterpreter()``
+
+PyObject
+--------
 
 * ``Py_NewRef()``
 * ``Py_SET_REFCNT()``
@@ -55,8 +61,8 @@ Object
 * ``Py_SET_TYPE()``
 * ``Py_XNewRef()``
 
-Unicode
--------
+PyUnicode
+---------
 
 * ``PyUnicode_GetMax()``
 * ``PyUnicode_InternImmortal()``: Python >= 3.0

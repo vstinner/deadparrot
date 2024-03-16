@@ -6,9 +6,19 @@
 PyFrameObject* DeadPyThreadState_GetFrame(PyThreadState *tstate)
 {
 #if PY_VERSION_HEX >= 0x030900B1
-    return DeadPyThreadState_GetFrame(tstate);
+    return PyThreadState_GetFrame(tstate);
 #else
     assert(tstate != _Py_NULL);
     return _DeadPy_CAST(PyFrameObject *, Py_XNewRef(tstate->frame));
+#endif
+}
+
+PyInterpreterState* DeadPyThreadState_GetInterpreter(PyThreadState *tstate)
+{
+#if PY_VERSION_HEX >= 0x030900A5
+    return PyThreadState_GetInterpreter(tstate);
+#else
+    assert(tstate != _Py_NULL);
+    return tstate->interp;
 #endif
 }

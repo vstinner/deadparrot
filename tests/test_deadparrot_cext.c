@@ -198,6 +198,28 @@ test_frame(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
 #endif  // !defined(PYPY_VERSION)
 
 
+static PyObject *
+test_thread_state(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
+{
+    PyThreadState *tstate = PyThreadState_Get();
+
+    // test PyThreadState_GetInterpreter()
+    PyInterpreterState *interp = PyThreadState_GetInterpreter(tstate);
+    assert(interp != _Py_NULL);
+
+#ifndef PYPY_VERSION
+    // test PyThreadState_GetFrame()
+    PyFrameObject *frame = PyThreadState_GetFrame(tstate);
+    if (frame != _Py_NULL) {
+        assert(PyFrame_Check(frame));
+    }
+    Py_XDECREF(frame);
+#endif
+
+    Py_RETURN_NONE;
+}
+
+
 static void
 check_call_result(PyObject *res, const char *str)
 {
@@ -353,6 +375,7 @@ static struct PyMethodDef methods[] = {
 #ifndef PYPY_VERSION
     {"test_frame", test_frame, METH_NOARGS, _Py_NULL},
 #endif
+    {"test_thread_state", test_thread_state, METH_NOARGS, _Py_NULL},
     {"test_call", test_call, METH_NOARGS, NULL},
     {"test_eval", test_eval, METH_NOARGS, NULL},
     {"test_interp", test_interp, METH_NOARGS, NULL},
