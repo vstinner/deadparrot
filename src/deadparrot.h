@@ -8,13 +8,28 @@ extern "C" {
 
 // --- Misc ------------------------------------------------------------------
 
-#define DeadPyAPI_FUNC(rtype) rtype
+// DeadPyAPI_FUNC()
+#ifndef _DeadPy__has_attribute
+#  define _DeadPy__has_attribute(x) __has_attribute(x)
+#else
+#  define _DeadPy__has_attribute(x) 0
+#endif
+#ifdef MS_WINDOWS
+#  define DeadPyAPI_FUNC(rtype) __declspec(dllexport) rtype
+#elif ((defined(__GNUC__) && (__GNUC__ >= 4)) \
+       || (defined(__clang__) && _DeadPy__has_attribute(visibility)))
+#  define DeadPyAPI_FUNC(rtype) __attribute__((visibility ("default"))) rtype
+#else
+#  define DeadPyAPI_FUNC(rtype) rtype
+#endif
 
+// _DeadPyObject_CAST()
 #ifdef _PyObject_CAST
 #  define _DeadPyObject_CAST(op) _PyObject_CAST(op)
 #else
 #  define _DeadPyObject_CAST(op) ((PyObject*)(op))
 #endif
+
 
 // --- Object ----------------------------------------------------------------
 
@@ -22,9 +37,10 @@ DeadPyAPI_FUNC(PyObject*) DeadPy_NewRef(PyObject *obj);
 DeadPyAPI_FUNC(PyObject*) DeadPy_XNewRef(PyObject *obj);
 
 #if PY_VERSION_HEX < 0x030A00A3 && !defined(Py_NewRef)
-#define Py_NewRef(obj) DeadPy_NewRef(_DeadPyObject_CAST(obj))
-#define Py_XNewRef(obj) DeadPy_XNewRef(_DeadPyObject_CAST(obj))
+#  define Py_NewRef(obj) DeadPy_NewRef(_DeadPyObject_CAST(obj))
+#  define Py_XNewRef(obj) DeadPy_XNewRef(_DeadPyObject_CAST(obj))
 #endif
+
 
 // --- Call ------------------------------------------------------------------
 
