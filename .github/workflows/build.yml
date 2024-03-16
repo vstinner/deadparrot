@@ -36,11 +36,9 @@ jobs:
           - os: windows-latest
             python: 3.12
 
-          # macOS: test old and new Python stable supported versions
-          # - os: macos-latest
-          #   python: 3.7
-          # - os: macos-latest
-          #   python: 3.12
+          # macOS
+          - os: macos-latest
+            python: 3.12
 
           # Ubuntu: test old unsupported Python versions
           - os: ubuntu-20.04
