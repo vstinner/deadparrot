@@ -45,6 +45,15 @@ test_object(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
     // Py_XNewRef(NULL)
     assert(Py_XNewRef(_Py_NULL) == _Py_NULL);
 
+    // Py_SET_REFCNT
+    Py_SET_REFCNT(obj, Py_REFCNT(obj));
+
+    // Py_SET_TYPE
+    Py_SET_TYPE(obj, Py_TYPE(obj));
+
+    // Py_SET_SIZE
+    Py_SET_SIZE(obj, Py_SIZE(obj));
+
     assert(Py_REFCNT(obj) == refcnt);
     Py_DECREF(obj);
     Py_RETURN_NONE;

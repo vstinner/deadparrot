@@ -23,11 +23,16 @@ extern "C" {
 #  define DeadPyAPI_FUNC(rtype) rtype
 #endif
 
-// _DeadPyObject_CAST()
-#ifdef _PyObject_CAST
-#  define _DeadPyObject_CAST(op) _PyObject_CAST(op)
+// _DeadPy_CAST() and _DeadPyObject_CAST()
+#ifdef _Py_CAST
+#  define _DeadPy_CAST(type, expr) _Py_CAST((type), (expr))
 #else
-#  define _DeadPyObject_CAST(op) ((PyObject*)(op))
+#  define _DeadPy_CAST(type, expr) ((type)(expr))
+#endif
+#ifdef _PyObject_CAST
+#  define _DeadPyObject_CAST(expr) _PyObject_CAST(expr)
+#else
+#  define _DeadPyObject_CAST(expr) _DeadPy_CAST(PyObject*, (expr))
 #endif
 
 
@@ -39,6 +44,21 @@ DeadPyAPI_FUNC(PyObject*) DeadPy_XNewRef(PyObject *obj);
 #if PY_VERSION_HEX < 0x030A00A3 && !defined(Py_NewRef)
 #  define Py_NewRef(obj) DeadPy_NewRef(_DeadPyObject_CAST(obj))
 #  define Py_XNewRef(obj) DeadPy_XNewRef(_DeadPyObject_CAST(obj))
+#endif
+
+DeadPyAPI_FUNC(void) DeadPy_SET_REFCNT(PyObject *obj, Py_ssize_t refcnt);
+#if PY_VERSION_HEX < 0x030900A4 && !defined(Py_SET_REFCNT)
+#  define Py_SET_REFCNT(obj, refcnt) DeadPy_SET_REFCNT(_DeadPyObject_CAST(obj), (refcnt))
+#endif
+
+DeadPyAPI_FUNC(void) DeadPy_SET_TYPE(PyObject *obj, PyTypeObject *type);
+#if PY_VERSION_HEX < 0x030900A4 && !defined(Py_SET_TYPE)
+#  define Py_SET_TYPE(obj, type) DeadPy_SET_TYPE(_DeadPyObject_CAST(obj), (type))
+#endif
+
+DeadPyAPI_FUNC(void) DeadPy_SET_SIZE(PyVarObject *obj, Py_ssize_t size);
+#if PY_VERSION_HEX < 0x030900A4 && !defined(Py_SET_SIZE)
+#define Py_SET_SIZE(obj, size) DeadPy_SET_SIZE(_DeadPy_CAST(PyVarObject*, (obj)), (size))
 #endif
 
 

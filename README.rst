@@ -22,21 +22,40 @@ functions to old Python versions.
 Functions
 =========
 
-Functions provided by the deadparrot library:
+Functions provided by the deadparrot library.
 
-* PyCFunction_Call()
-* PyEval_CallFunction()
-* PyEval_CallMethod()
-* PyEval_CallObject()
-* PyEval_CallObjectWithKeywords()
-* PyEval_InitThreads()
-* PyFPE_END_PROTECT()
-* PyFPE_START_PROTECT()
-* PyUnicode_GetMax()
-* PyUnicode_InternImmortal(): Python >= 3.0
-* _PyInterpreterState_Get(): Python >= 3.8
-* _PyObject_FastCall(): Python >= 3.6
+Object
+------
 
+* ``Py_NewRef()``
+* ``Py_SET_REFCNT()``
+* ``Py_SET_SIZE()``
+* ``Py_SET_TYPE()``
+* ``Py_XNewRef()``
+
+Call
+----
+
+* ``PyCFunction_Call()``
+* ``PyEval_CallFunction()``
+* ``PyEval_CallMethod()``
+* ``PyEval_CallObject()``
+* ``PyEval_CallObjectWithKeywords()``
+* ``_PyObject_FastCall()``: Python >= 3.6
+
+Unicode
+-------
+
+* ``PyUnicode_GetMax()``
+* ``PyUnicode_InternImmortal()``: Python >= 3.0
+
+Misc
+----
+
+* ``PyEval_InitThreads()``
+* ``PyFPE_END_PROTECT()``
+* ``PyFPE_START_PROTECT()``
+* ``_PyInterpreterState_Get()``: Python >= 3.8
 
 Tests
 =====
