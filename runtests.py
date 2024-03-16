@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Run the test suite on multiple Python versions.
 

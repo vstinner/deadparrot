@@ -6,28 +6,48 @@ extern "C" {
 
 #include <Python.h>
 
+// --- Misc ------------------------------------------------------------------
+
+#define DeadPyAPI_FUNC(rtype) rtype
+
+#ifdef _PyObject_CAST
+#  define _DeadPyObject_CAST(op) _PyObject_CAST(op)
+#else
+#  define _DeadPyObject_CAST(op) ((PyObject*)(op))
+#endif
+
+// --- Object ----------------------------------------------------------------
+
+DeadPyAPI_FUNC(PyObject*) DeadPy_NewRef(PyObject *obj);
+DeadPyAPI_FUNC(PyObject*) DeadPy_XNewRef(PyObject *obj);
+
+#if PY_VERSION_HEX < 0x030A00A3 && !defined(Py_NewRef)
+#define Py_NewRef(obj) DeadPy_NewRef(_DeadPyObject_CAST(obj))
+#define Py_XNewRef(obj) DeadPy_XNewRef(_DeadPyObject_CAST(obj))
+#endif
+
 // --- Call ------------------------------------------------------------------
 
-PyObject* DeadPyEval_CallObject(
+DeadPyAPI_FUNC(PyObject*) DeadPyEval_CallObject(
     PyObject *callable,
     PyObject *args);
 
-PyObject* DeadPyEval_CallObjectWithKeywords(
+DeadPyAPI_FUNC(PyObject*) DeadPyEval_CallObjectWithKeywords(
     PyObject *callable,
     PyObject *args,
     PyObject *kwargs);
 
-PyObject* DeadPyCFunction_Call(
+DeadPyAPI_FUNC(PyObject*) DeadPyCFunction_Call(
     PyObject *callable,
     PyObject *args,
     PyObject *kwargs);
 
-PyObject* DeadPyEval_CallFunction(
+DeadPyAPI_FUNC(PyObject*) DeadPyEval_CallFunction(
     PyObject *callable,
     const char *format,
     ...);
 
-PyObject* DeadPyEval_CallMethod(
+DeadPyAPI_FUNC(PyObject*) DeadPyEval_CallMethod(
     PyObject *obj,
     const char *name,
     const char *format,
@@ -43,7 +63,7 @@ PyObject* DeadPyEval_CallMethod(
 
 
 #if PY_VERSION_HEX >= 0x03060000
-PyObject* _DeadPyObject_FastCall(
+DeadPyAPI_FUNC(PyObject*) _DeadPyObject_FastCall(
     PyObject *func,
     PyObject *const *args,
     Py_ssize_t nargs);
@@ -55,7 +75,7 @@ PyObject* _DeadPyObject_FastCall(
 
 // --- Eval ------------------------------------------------------------------
 
-void DeadPyEval_InitThreads(void);
+DeadPyAPI_FUNC(void) DeadPyEval_InitThreads(void);
 
 #if PY_VERSION_HEX >= 0x030D0000 && !defined(DeadPy_NO_ALIAS)
 #  define PyEval_InitThreads DeadPyEval_InitThreads
@@ -86,13 +106,13 @@ typedef wchar_t DeadPy_UNICODE;
 typedef Py_UNICODE DeadPy_UNICODE;
 #endif
 
-DeadPy_UNICODE DeadPyUnicode_GetMax(void);
+DeadPyAPI_FUNC(DeadPy_UNICODE) DeadPyUnicode_GetMax(void);
 #if PY_VERSION_HEX >= 0x030A0000 && !defined(DeadPy_NO_ALIAS)
 #  define PyUnicode_GetMax DeadPyUnicode_GetMax
 #endif
 
 #if PY_VERSION_HEX >= 0x03000000
-void DeadPyUnicode_InternImmortal(PyObject **p);
+DeadPyAPI_FUNC(void) DeadPyUnicode_InternImmortal(PyObject **p);
 #if PY_VERSION_HEX >= 0x030C0000 && !defined(DeadPy_NO_ALIAS)
 #  define PyUnicode_InternImmortal DeadPyUnicode_InternImmortal
 #endif

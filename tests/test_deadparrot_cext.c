@@ -21,6 +21,36 @@
 IGNORE_DEPR_WARNINGS
 
 
+static PyObject *
+test_object(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
+{
+    PyObject *obj = PyList_New(0);
+    if (obj == _Py_NULL) {
+        return _Py_NULL;
+    }
+    Py_ssize_t refcnt = Py_REFCNT(obj);
+
+    // Py_NewRef()
+    PyObject *ref = Py_NewRef(obj);
+    assert(ref == obj);
+    assert(Py_REFCNT(obj) == (refcnt + 1));
+    Py_DECREF(ref);
+
+    // Py_XNewRef()
+    PyObject *xref = Py_XNewRef(obj);
+    assert(xref == obj);
+    assert(Py_REFCNT(obj) == (refcnt + 1));
+    Py_DECREF(xref);
+
+    // Py_XNewRef(NULL)
+    assert(Py_XNewRef(_Py_NULL) == _Py_NULL);
+
+    assert(Py_REFCNT(obj) == refcnt);
+    Py_DECREF(obj);
+    Py_RETURN_NONE;
+}
+
+
 static void
 check_call_result(PyObject *res, const char *str)
 {
@@ -171,6 +201,7 @@ test_unicode(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 
 
 static struct PyMethodDef methods[] = {
+    {"test_object", test_object, METH_NOARGS, NULL},
     {"test_call", test_call, METH_NOARGS, NULL},
     {"test_eval", test_eval, METH_NOARGS, NULL},
     {"test_interp", test_interp, METH_NOARGS, NULL},
