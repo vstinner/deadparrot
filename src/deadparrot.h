@@ -59,7 +59,7 @@ DeadPyAPI_FUNC(void) DeadPy_SET_TYPE(PyObject *obj, PyTypeObject *type);
 
 DeadPyAPI_FUNC(void) DeadPy_SET_SIZE(PyVarObject *obj, Py_ssize_t size);
 #if PY_VERSION_HEX < 0x030900A4 && !defined(Py_SET_SIZE)
-#define Py_SET_SIZE(obj, size) DeadPy_SET_SIZE(_DeadPy_CAST(PyVarObject*, (obj)), (size))
+#  define Py_SET_SIZE(obj, size) DeadPy_SET_SIZE(_DeadPy_CAST(PyVarObject*, (obj)), (size))
 #endif
 
 DeadPyAPI_FUNC(int) DeadPy_Is(PyObject *x, PyObject *y);
@@ -150,7 +150,14 @@ DeadPyAPI_FUNC(void) DeadPyEval_InitThreads(void);
 
 // --- PyInterpreterState ----------------------------------------------------
 
-#if PY_VERSION_HEX >= 0x030D0000 && !defined(_PyInterpreterState_Get)
+DeadPyAPI_FUNC(PyInterpreterState*) DeadPyInterpreterState_Get(void);
+#if PY_VERSION_HEX < 0x030900A5 || defined(PYPY_VERSION) && !defined(DeadPy_NO_ALIAS)
+#  define PyInterpreterState_Get DeadPyInterpreterState_Get
+#endif
+
+#if ((PY_VERSION_HEX < 0x03080000 || 0x030D0000 <= PY_VERSION_HEX \
+      || defined(PYPY_VERSION)) \
+     && !defined(_PyInterpreterState_Get))
 #  define _PyInterpreterState_Get PyInterpreterState_Get
 #endif
 
@@ -159,12 +166,12 @@ DeadPyAPI_FUNC(void) DeadPyEval_InitThreads(void);
 
 DeadPyAPI_FUNC(PyInterpreterState*) DeadPyThreadState_GetInterpreter(PyThreadState *tstate);
 #if (PY_VERSION_HEX < 0x030900A5 || defined(PYPY_VERSION)) && !defined(DeadPy_NO_ALIAS)
-#define PyThreadState_GetInterpreter DeadPyThreadState_GetInterpreter
+#  define PyThreadState_GetInterpreter DeadPyThreadState_GetInterpreter
 #endif
 
 DeadPyAPI_FUNC(PyFrameObject*) DeadPyThreadState_GetFrame(PyThreadState *tstate);
 #if (PY_VERSION_HEX < 0x030900B1 && !defined(PYPY_VERSION)) && !defined(DeadPy_NO_ALIAS)
-#define PyThreadState_GetFrame DeadPyThreadState_GetFrame
+#  define PyThreadState_GetFrame DeadPyThreadState_GetFrame
 #endif
 
 
@@ -183,7 +190,7 @@ DeadPyAPI_FUNC(DeadPy_UNICODE) DeadPyUnicode_GetMax(void);
 
 #if PY_VERSION_HEX >= 0x03000000
 DeadPyAPI_FUNC(void) DeadPyUnicode_InternImmortal(PyObject **p);
-#if PY_VERSION_HEX >= 0x030C0000 && !defined(DeadPy_NO_ALIAS)
+#if (PY_VERSION_HEX >= 0x030C0000 || defined(PYPY_VERSION)) && !defined(DeadPy_NO_ALIAS)
 #  define PyUnicode_InternImmortal DeadPyUnicode_InternImmortal
 #endif
 #endif

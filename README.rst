@@ -46,6 +46,12 @@ PyFrame
 * ``PyFrame_GetVar()``
 * ``PyFrame_GetVarString()``
 
+PyInterpreterState
+------------------
+
+* ``PyInterpreterState_Get()``
+* ``_PyInterpreterState_Get()``
+
 PyThreadState
 -------------
 
@@ -73,7 +79,6 @@ Misc
 * ``PyEval_InitThreads()``
 * ``PyFPE_END_PROTECT()``
 * ``PyFPE_START_PROTECT()``
-* ``_PyInterpreterState_Get()``: Python >= 3.8
 
 Tests
 =====

@@ -220,6 +220,25 @@ test_thread_state(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
 }
 
 
+static PyObject *
+test_interpreter(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
+{
+    // test PyInterpreterState_Get()
+    PyInterpreterState *interp = PyInterpreterState_Get();
+    assert(interp != _Py_NULL);
+    PyThreadState *tstate = PyThreadState_Get();
+    PyInterpreterState *interp2 = PyThreadState_GetInterpreter(tstate);
+    assert(interp == interp2);
+
+    // test _PyInterpreterState_Get()
+    PyInterpreterState *interp3 = _PyInterpreterState_Get();
+    assert(interp3 == interp);
+
+    Py_RETURN_NONE;
+}
+
+
+
 static void
 check_call_result(PyObject *res, const char *str)
 {
@@ -328,18 +347,6 @@ error:
 
 
 static PyObject *
-test_interp(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
-{
-#if PY_VERSION_HEX >= 0x03080000
-    PyInterpreterState *interp = _PyInterpreterState_Get();
-    assert(interp != NULL);
-#endif
-
-    Py_RETURN_NONE;
-}
-
-
-static PyObject *
 test_eval(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 {
     // test PyEval_InitThreads()
@@ -376,9 +383,9 @@ static struct PyMethodDef methods[] = {
     {"test_frame", test_frame, METH_NOARGS, _Py_NULL},
 #endif
     {"test_thread_state", test_thread_state, METH_NOARGS, _Py_NULL},
+    {"test_interpreter", test_interpreter, METH_NOARGS, _Py_NULL},
     {"test_call", test_call, METH_NOARGS, NULL},
     {"test_eval", test_eval, METH_NOARGS, NULL},
-    {"test_interp", test_interp, METH_NOARGS, NULL},
     {"test_unicode", test_unicode, METH_NOARGS, NULL},
     {NULL, NULL, 0, NULL}
 };
