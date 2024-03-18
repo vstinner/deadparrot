@@ -55,8 +55,11 @@ PyInterpreterState
 PyThreadState
 -------------
 
+* ``PyThreadState_EnterTracing()``
 * ``PyThreadState_GetFrame()``
+* ``PyThreadState_GetID()``
 * ``PyThreadState_GetInterpreter()``
+* ``PyThreadState_LeaveTracing()``
 
 PyObject
 --------

@@ -176,9 +176,19 @@ DeadPyAPI_FUNC(PyFrameObject*) DeadPyThreadState_GetFrame(PyThreadState *tstate)
 #endif
 
 #if 0x030700A1 <= PY_VERSION_HEX && !defined(PYPY_VERSION)
-DeadPyAPI_FUNC(uint64_t) DeadPyThreadState_GetID(PyThreadState *tstate);
+   DeadPyAPI_FUNC(uint64_t) DeadPyThreadState_GetID(PyThreadState *tstate);
 #  if PY_VERSION_HEX < 0x030900A6 && !defined(DeadPy_NO_ALIAS)
 #    define PyThreadState_GetID DeadPyThreadState_GetID
+#  endif
+#endif
+
+#ifndef PYPY_VERSION
+   DeadPyAPI_FUNC(void) DeadPyThreadState_EnterTracing(PyThreadState *tstate);
+   DeadPyAPI_FUNC(void) DeadPyThreadState_LeaveTracing(PyThreadState *tstate);
+
+#  if PY_VERSION_HEX < 0x030B00A2 && !defined(PYPY_VERSION)
+#    define PyThreadState_EnterTracing DeadPyThreadState_EnterTracing
+#    define PyThreadState_LeaveTracing DeadPyThreadState_LeaveTracing
 #  endif
 #endif
 

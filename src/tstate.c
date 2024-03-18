@@ -36,3 +36,39 @@ uint64_t DeadPyThreadState_GetID(PyThreadState *tstate)
 #endif
 }
 #endif
+
+
+#ifndef PYPY_VERSION
+void DeadPyThreadState_EnterTracing(PyThreadState *tstate)
+{
+#if PY_VERSION_HEX >= 0x030B00A2
+    PyThreadState_EnterTracing(tstate);
+#else
+    tstate->tracing++;
+#if PY_VERSION_HEX >= 0x030A00A1
+    tstate->cframe->use_tracing = 0;
+#else
+    tstate->use_tracing = 0;
+#endif
+#endif
+}
+#endif
+
+
+#ifndef PYPY_VERSION
+void DeadPyThreadState_LeaveTracing(PyThreadState *tstate)
+{
+#if PY_VERSION_HEX >= 0x030B00A2
+    PyThreadState_LeaveTracing(tstate);
+#else
+    int use_tracing = (tstate->c_tracefunc != _Py_NULL
+                       || tstate->c_profilefunc != _Py_NULL);
+    tstate->tracing--;
+#if PY_VERSION_HEX >= 0x030A00A1
+    tstate->cframe->use_tracing = use_tracing;
+#else
+    tstate->use_tracing = use_tracing;
+#endif
+#endif
+}
+#endif
