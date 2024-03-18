@@ -91,6 +91,11 @@ DeadPyAPI_FUNC(PyObject*) DeadPyObject_CallNoArgs(PyObject *func);
 #  define PyObject_CallNoArgs DeadPyObject_CallNoArgs
 #endif
 
+DeadPyAPI_FUNC(PyObject*) DeadPyObject_CallOneArg(PyObject *func, PyObject *arg);
+#if !defined(PyObject_CallOneArg) && PY_VERSION_HEX < 0x030900A4
+#  define PyObject_CallOneArg DeadPyObject_CallOneArg
+#endif
+
 DeadPyAPI_FUNC(PyObject*) DeadPyEval_CallObject(
     PyObject *callable,
     PyObject *args);

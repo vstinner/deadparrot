@@ -33,6 +33,7 @@ Call
 * ``PyEval_CallObject()``
 * ``PyEval_CallObjectWithKeywords()``
 * ``PyObject_CallNoArgs()``
+* ``PyObject_CallOneArg()``
 * ``_PyObject_FastCall()``: Python >= 3.6
 
 PyFrame

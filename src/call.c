@@ -15,6 +15,16 @@ PyObject* DeadPyObject_CallNoArgs(PyObject *func)
 }
 
 
+PyObject* DeadPyObject_CallOneArg(PyObject *func, PyObject *arg)
+{
+#if PY_VERSION_HEX >= 0x030900A4
+    return PyObject_CallOneArg(func, arg);
+#else
+    return PyObject_CallFunctionObjArgs(func, arg, NULL);
+#endif
+}
+
+
 PyObject*
 DeadPyEval_CallObjectWithKeywords(PyObject *callable,
                                   PyObject *args, PyObject *kwargs)
