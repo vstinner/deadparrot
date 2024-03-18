@@ -86,6 +86,11 @@ DeadPyAPI_FUNC(int) DeadPy_IsTrue(PyObject *x);
 
 // --- Call ------------------------------------------------------------------
 
+DeadPyAPI_FUNC(PyObject*) DeadPyObject_CallNoArgs(PyObject *func);
+#if PY_VERSION_HEX < 0x030900A1 && !defined(DeadPy_NO_ALIAS)
+#  define PyObject_CallNoArgs DeadPyObject_CallNoArgs
+#endif
+
 DeadPyAPI_FUNC(PyObject*) DeadPyEval_CallObject(
     PyObject *callable,
     PyObject *args);
@@ -186,7 +191,7 @@ DeadPyAPI_FUNC(PyFrameObject*) DeadPyThreadState_GetFrame(PyThreadState *tstate)
    DeadPyAPI_FUNC(void) DeadPyThreadState_EnterTracing(PyThreadState *tstate);
    DeadPyAPI_FUNC(void) DeadPyThreadState_LeaveTracing(PyThreadState *tstate);
 
-#  if PY_VERSION_HEX < 0x030B00A2 && !defined(PYPY_VERSION)
+#  if PY_VERSION_HEX < 0x030B00A2 && !defined(PYPY_VERSION) && !defined(DeadPy_NO_ALIAS)
 #    define PyThreadState_EnterTracing DeadPyThreadState_EnterTracing
 #    define PyThreadState_LeaveTracing DeadPyThreadState_LeaveTracing
 #  endif

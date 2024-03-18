@@ -298,6 +298,17 @@ test_call(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
         goto error;
     }
 
+    // test PyObject_CallNoArgs(): str() returns ''
+    {
+        PyObject *func = _DeadPy_CAST(PyObject*, &PyUnicode_Type);
+        PyObject *res = PyObject_CallNoArgs(func);
+        if (res == NULL) {
+            return NULL;
+        }
+        assert(PyUnicode_Check(res));
+        Py_DECREF(res);
+    }
+
     // test PyEval_CallObject()
     PyObject *res = PyEval_CallObject(str_upper, upper_args);
     check_call_result(res, "ABC");

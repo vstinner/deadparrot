@@ -5,6 +5,16 @@
 IGNORE_DEPR_WARNINGS
 
 
+PyObject* DeadPyObject_CallNoArgs(PyObject *func)
+{
+#if PY_VERSION_HEX >= 0x030900A1
+    return PyObject_CallNoArgs(func);
+#else
+    return PyObject_CallFunctionObjArgs(func, NULL);
+#endif
+}
+
+
 PyObject*
 DeadPyEval_CallObjectWithKeywords(PyObject *callable,
                                   PyObject *args, PyObject *kwargs)
