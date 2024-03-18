@@ -1,11 +1,12 @@
 #ifndef DEADPARROT_H
 #define DEADPARROT_H
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include <Python.h>
 #include <frameobject.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // --- Misc ------------------------------------------------------------------
 
@@ -172,6 +173,13 @@ DeadPyAPI_FUNC(PyInterpreterState*) DeadPyThreadState_GetInterpreter(PyThreadSta
 DeadPyAPI_FUNC(PyFrameObject*) DeadPyThreadState_GetFrame(PyThreadState *tstate);
 #if (PY_VERSION_HEX < 0x030900B1 && !defined(PYPY_VERSION)) && !defined(DeadPy_NO_ALIAS)
 #  define PyThreadState_GetFrame DeadPyThreadState_GetFrame
+#endif
+
+#if 0x030700A1 <= PY_VERSION_HEX && !defined(PYPY_VERSION)
+DeadPyAPI_FUNC(uint64_t) DeadPyThreadState_GetID(PyThreadState *tstate);
+#  if PY_VERSION_HEX < 0x030900A6 && !defined(DeadPy_NO_ALIAS)
+#    define PyThreadState_GetID DeadPyThreadState_GetID
+#  endif
 #endif
 
 

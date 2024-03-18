@@ -13,6 +13,7 @@ PyFrameObject* DeadPyThreadState_GetFrame(PyThreadState *tstate)
 #endif
 }
 
+
 PyInterpreterState* DeadPyThreadState_GetInterpreter(PyThreadState *tstate)
 {
 #if PY_VERSION_HEX >= 0x030900A5
@@ -22,3 +23,16 @@ PyInterpreterState* DeadPyThreadState_GetInterpreter(PyThreadState *tstate)
     return tstate->interp;
 #endif
 }
+
+
+#if 0x030700A1 <= PY_VERSION_HEX && !defined(PYPY_VERSION)
+uint64_t DeadPyThreadState_GetID(PyThreadState *tstate)
+{
+#if PY_VERSION_HEX >= 0x030900A6
+    return PyThreadState_GetID(tstate);
+#else
+    assert(tstate != _Py_NULL);
+    return tstate->id;
+#endif
+}
+#endif
