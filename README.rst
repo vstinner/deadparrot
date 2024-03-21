@@ -63,6 +63,13 @@ PyThreadState
 * ``PyThreadState_GetInterpreter()``
 * ``PyThreadState_LeaveTracing()``
 
+PyModule
+--------
+
+* ``PyModule_AddObjectRef()``
+* ``PyModule_AddType()``
+* ``PyModule_Add()``
+
 PyObject
 --------
 

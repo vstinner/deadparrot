@@ -266,6 +266,25 @@ DeadPyAPI_FUNC(PyObject*) DeadPyFrame_GetVarString(PyFrameObject *frame, const c
 #  define PyFrame_GetVarString DeadPyFrame_GetVarString
 #endif
 
+
+// --- Module ----------------------------------------------------------------
+
+DeadPyAPI_FUNC(int) DeadPyModule_AddObjectRef(PyObject *module, const char *name, PyObject *value);
+#if PY_VERSION_HEX < 0x030A00A3 && !defined(DeadPy_NO_ALIAS)
+#  define PyModule_AddObjectRef DeadPyModule_AddObjectRef
+#endif
+
+DeadPyAPI_FUNC(int) DeadPyModule_AddType(PyObject *module, PyTypeObject *type);
+#if PY_VERSION_HEX < 0x030900A5 && !defined(DeadPy_NO_ALIAS)
+#  define PyModule_AddType DeadPyModule_AddType
+#endif
+
+DeadPyAPI_FUNC(int) DeadPyModule_Add(PyObject *mod, const char *name, PyObject *value);
+#if PY_VERSION_HEX < 0x030D00A1 && !defined(DeadPy_NO_ALIAS)
+#  define PyModule_Add DeadPyModule_Add
+#endif
+
+
 #ifdef __cplusplus
 }
 #endif

@@ -22,6 +22,7 @@ add_library(${PROJECT_NAME} SHARED
     eval.c
     interp.c
     frame.c
+    module.c
     object.c
     tstate.c
     unicode.c

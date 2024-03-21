@@ -9,6 +9,10 @@
 #  error "assertions must be enabled"
 #endif
 
+#if PY_VERSION_HEX >= 0x03000000
+#  define PYTHON3 1
+#endif
+
 #ifndef Py_UNUSED
 #  if defined(__GNUC__) || defined(__clang__)
 #    define Py_UNUSED(name) _unused_ ## name __attribute__((unused))
@@ -19,6 +23,25 @@
 
 // Ignore deprecation warnings of Py_DEPRECATED()
 IGNORE_DEPR_WARNINGS
+
+
+// Ignore reference count checks on PyPy
+#ifndef PYPY_VERSION
+#  define CHECK_REFCNT
+#endif
+
+// CPython 3.12 beta 1 implements immortal objects (PEP 683)
+#if 0x030C00B1 <= PY_VERSION_HEX && !defined(PYPY_VERSION)
+   // Don't check reference count of Python 3.12 immortal objects (ex: bool
+   // and str types)
+#  define IMMORTAL_OBJS
+#endif
+
+#ifdef CHECK_REFCNT
+#  define ASSERT_REFCNT(expr) assert(expr)
+#else
+#  define ASSERT_REFCNT(expr)
+#endif
 
 
 static PyObject *
@@ -398,6 +421,152 @@ test_unicode(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 }
 
 
+static int
+check_module_attr(PyObject *module, const char *name, PyObject *expected)
+{
+    PyObject *attr = PyObject_GetAttrString(module, name);
+    if (attr == _Py_NULL) {
+        return -1;
+    }
+    assert(attr == expected);
+    Py_DECREF(attr);
+
+    if (PyObject_DelAttrString(module, name) < 0) {
+        return -1;
+    }
+    return 0;
+}
+
+
+// test PyModule_AddType()
+static int
+test_module_add_type(PyObject *module)
+{
+    PyTypeObject *type = &PyUnicode_Type;
+#ifdef PYTHON3
+    const char *type_name = "str";
+#else
+    const char *type_name = "unicode";
+#endif
+#ifdef CHECK_REFCNT
+    Py_ssize_t refcnt = Py_REFCNT(type);
+#endif
+
+    if (PyModule_AddType(module, type) < 0) {
+        return -1;
+    }
+#ifndef IMMORTAL_OBJS
+    ASSERT_REFCNT(Py_REFCNT(type) == refcnt + 1);
+#endif
+
+    if (check_module_attr(module, type_name, _Py_CAST(PyObject*, type)) < 0) {
+        return -1;
+    }
+    ASSERT_REFCNT(Py_REFCNT(type) == refcnt);
+    return 0;
+}
+
+
+// test PyModule_AddObjectRef()
+static int
+test_module_addobjectref(PyObject *module)
+{
+    const char *name = "test_module_addobjectref";
+    PyObject *obj = PyUnicode_FromString(name);
+    assert(obj != _Py_NULL);
+#ifdef CHECK_REFCNT
+    Py_ssize_t refcnt = Py_REFCNT(obj);
+#endif
+
+    if (PyModule_AddObjectRef(module, name, obj) < 0) {
+        ASSERT_REFCNT(Py_REFCNT(obj) == refcnt);
+        Py_DECREF(obj);
+        return -1;
+    }
+    ASSERT_REFCNT(Py_REFCNT(obj) == refcnt + 1);
+
+    if (check_module_attr(module, name, obj) < 0) {
+        Py_DECREF(obj);
+        return -1;
+    }
+    ASSERT_REFCNT(Py_REFCNT(obj) == refcnt);
+
+    // PyModule_AddObjectRef() with value=NULL must not crash
+    assert(!PyErr_Occurred());
+    int res = PyModule_AddObjectRef(module, name, _Py_NULL);
+    assert(res < 0);
+    assert(PyErr_ExceptionMatches(PyExc_SystemError));
+    PyErr_Clear();
+
+    Py_DECREF(obj);
+    return 0;
+}
+
+
+// test PyModule_Add()
+static int
+test_module_add(PyObject *module)
+{
+    const char *name = "test_module_add";
+    PyObject *obj = PyUnicode_FromString(name);
+    assert(obj != _Py_NULL);
+#ifdef CHECK_REFCNT
+    Py_ssize_t refcnt = Py_REFCNT(obj);
+#endif
+
+    if (PyModule_Add(module, name, Py_NewRef(obj)) < 0) {
+        ASSERT_REFCNT(Py_REFCNT(obj) == refcnt);
+        Py_DECREF(obj);
+        return -1;
+    }
+    ASSERT_REFCNT(Py_REFCNT(obj) == refcnt + 1);
+
+    if (check_module_attr(module, name, obj) < 0) {
+        Py_DECREF(obj);
+        return -1;
+    }
+    ASSERT_REFCNT(Py_REFCNT(obj) == refcnt);
+
+    // PyModule_Add() with value=NULL must not crash
+    assert(!PyErr_Occurred());
+    int res = PyModule_Add(module, name, _Py_NULL);
+    assert(res < 0);
+    assert(PyErr_ExceptionMatches(PyExc_SystemError));
+    PyErr_Clear();
+
+    Py_DECREF(obj);
+    return 0;
+}
+
+
+static PyObject *
+test_module(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
+{
+    PyObject *module = PyImport_ImportModule("sys");
+    if (module == _Py_NULL) {
+        return _Py_NULL;
+    }
+    assert(PyModule_Check(module));
+
+    if (test_module_add_type(module) < 0) {
+        goto error;
+    }
+    if (test_module_addobjectref(module) < 0) {
+        goto error;
+    }
+    if (test_module_add(module) < 0) {
+        goto error;
+    }
+
+    Py_DECREF(module);
+    Py_RETURN_NONE;
+
+error:
+    Py_DECREF(module);
+    return _Py_NULL;
+}
+
+
 static struct PyMethodDef methods[] = {
     {"test_object", test_object, METH_NOARGS, NULL},
     {"test_py_is", test_py_is, METH_NOARGS, _Py_NULL},
@@ -409,6 +578,7 @@ static struct PyMethodDef methods[] = {
     {"test_call", test_call, METH_NOARGS, NULL},
     {"test_eval", test_eval, METH_NOARGS, NULL},
     {"test_unicode", test_unicode, METH_NOARGS, NULL},
+    {"test_module", test_module, METH_NOARGS, _Py_NULL},
     {NULL, NULL, 0, NULL}
 };
 
