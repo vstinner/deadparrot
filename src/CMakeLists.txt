@@ -10,13 +10,16 @@ set(Python_INCLUDE_DIR "" CACHE STRING "Optional user-selected Python include di
 
 if(Python_INCLUDE_DIR)
   include_directories(${Python_INCLUDE_DIR})
+  # link_directories is only needed on Windows
 else()
   if(Python_VERSION)
     find_package (Python ${Python_VERSION} EXACT REQUIRED COMPONENTS Development)
     include_directories(${Python_INCLUDE_DIRS})
+    link_directories(${Python_LIBRARY_DIRS})
   else()
     find_package (Python COMPONENTS Development)
     include_directories(${Python_INCLUDE_DIRS})
+    link_directories(${Python_LIBRARY_DIRS})
   endif()
 endif()
 
