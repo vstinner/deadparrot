@@ -6,13 +6,19 @@ project(deadparrot
         DESCRIPTION "use old removed Python C functions on new Python versions")
 
 set(Python_VERSION "" CACHE STRING "Optional user-selected Python version")
-if(Python_VERSION)
-  find_package (Python ${Python_VERSION} EXACT REQUIRED COMPONENTS Development)
+set(Python_INCLUDE_DIR "" CACHE STRING "Optional user-selected Python include directory")
+
+if(Python_INCLUDE_DIR)
+  include_directories(${Python_INCLUDE_DIR})
 else()
-  find_package (Python COMPONENTS Development)
+  if(Python_VERSION)
+    find_package (Python ${Python_VERSION} EXACT REQUIRED COMPONENTS Development)
+    include_directories(${Python_INCLUDE_DIRS})
+  else()
+    find_package (Python COMPONENTS Development)
+    include_directories(${Python_INCLUDE_DIRS})
+  endif()
 endif()
-include_directories(${Python_INCLUDE_DIRS})
-link_directories(${Python_LIBRARY_DIRS})
 
 # On Windows, not only create .dll but also .lib
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)

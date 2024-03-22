@@ -7,6 +7,7 @@ import os.path
 import shutil
 import subprocess
 import sys
+import sysconfig
 import warnings
 try:
     import faulthandler
@@ -184,12 +185,15 @@ def build_libdeadparrot(verbose):
 
     # Configure
     ver = sys.version_info
-    Python_VERSION = "%s.%s" % (ver.major, ver.minor)
+    # Pass directly the include directory since CMake FindPython prefers
+    # the release ABI to the debug ABI, and the debug ABI should also be
+    # tested.
+    include_dir = sysconfig.get_path('platinclude')
     cmd = [
         "cmake",
         "-B", build_dir,
         "-D", "CMAKE_BUILD_TYPE=%s" % config,
-        "-D", "Python_VERSION=%s" % Python_VERSION,
+        "-D", "Python_INCLUDE_DIR=%s" % include_dir,
     ]
     run_command(cmd, verbose)
 
