@@ -144,14 +144,25 @@ DeadPyEval_CallMethod(PyObject *obj, const char *name, const char *format, ...)
 }
 
 
-#if PY_VERSION_HEX >= 0x03060000
 PyObject *
 _DeadPyObject_FastCall(PyObject *func, PyObject *const *args, Py_ssize_t nargs)
 {
 #if PY_VERSION_HEX >= 0x030D00A1
     return PyObject_Vectorcall(func, args, (size_t)nargs, NULL);
-#else
+#elif PY_VERSION_HEX >= 0x03090000 && !defined(PYPY_VERSION)
     return _PyObject_FastCall(func, (PyObject **)args, nargs);
+#else
+    // PyPy for Python 3.8 and older
+    PyObject *tuple = PyTuple_New(nargs);
+    if (tuple == NULL) {
+        return NULL;
+    }
+    for (Py_ssize_t i=0; i < nargs; i++) {
+        PyTuple_SET_ITEM(tuple, i, Py_NewRef(args[i]));
+    }
+
+    PyObject *res = PyObject_Call(func, tuple, NULL);
+    Py_DECREF(tuple);
+    return res;
 #endif
 }
-#endif
