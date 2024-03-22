@@ -28,6 +28,7 @@ SRC_DIR = os.path.dirname(__file__)
 TEST_SCRIPT = os.path.join(SRC_DIR, "tests", "test_deadparrot.py")
 
 PYTHONS = (
+    # CPython
     "python3-debug",
     "python3",
     "python2.7",
@@ -41,6 +42,17 @@ PYTHONS = (
     "python3.11",
     "python3.12",
     "python3.13",
+
+    # PyPy
+    "pypy",
+    "pypy2",
+    "pypy2.7",
+    "pypy3",
+    "pypy3.6",
+    "pypy3.7",
+    "pypy3.8",
+    "pypy3.9",
+    "pypy3.10",
 )
 
 

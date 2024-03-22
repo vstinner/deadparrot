@@ -28,6 +28,25 @@ jobs:
           - "3.11"
           - "3.12"
           - "3.13"
+
+          # PyPy versions:
+          # - https://github.com/actions/setup-python/blob/main/docs/advanced-usage.md
+          # - https://downloads.python.org/pypy/
+          # - Only versions listed in this JSON are supported:
+          #   https://downloads.python.org/pypy/versions.json
+          - "pypy2.7"
+          - "pypy3.6"
+          - "pypy3.7"
+          - "pypy3.8"
+          - "pypy3.9"
+          - "pypy3.10"
+
+          # Old PyPy versions
+          # See https://foss.heptapod.net/pypy/pypy/-/issues/3991
+          - "pypy2.7-v7.3.2"
+          - "pypy3.6-v7.3.2"
+          - "pypy3.7-v7.3.2"
+
         include:
           # Windows: test old and new Python stable supported versions
           # Python 3.7 lacks os.add_dll_directory() used by tests.
