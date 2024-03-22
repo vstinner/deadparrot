@@ -185,16 +185,19 @@ def build_libdeadparrot(verbose):
 
     # Configure
     ver = sys.version_info
-    # Pass directly the include directory since CMake FindPython prefers
-    # the release ABI to the debug ABI, and the debug ABI should also be
-    # tested.
-    include_dir = sysconfig.get_path('platinclude')
     cmd = [
         "cmake",
         "-B", build_dir,
         "-D", "CMAKE_BUILD_TYPE=%s" % config,
-        "-D", "Python_INCLUDE_DIR=%s" % include_dir,
     ]
+
+    # Pass directly the include directory since CMake FindPython prefers
+    # the release ABI to the debug ABI, and the debug ABI should also be
+    # tested.
+    include_dir = sysconfig.get_path('platinclude')
+    cmd.extend((
+        "-D", "Python_INCLUDE_DIR=%s" % include_dir,
+    ))
     run_command(cmd, verbose)
 
     # Build
