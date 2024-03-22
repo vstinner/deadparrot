@@ -142,6 +142,49 @@ Change the destination to install to a specific directory::
     cmake -B build/ -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/custom/prefix
 
 
+Unsupported new C API functions (TODO)
+======================================
+
+* ``PyCode_GetCellvars()``
+* ``PyCode_GetCode()``
+* ``PyCode_GetFreevars()``
+* ``PyCode_GetVarnames()``
+* ``PyDict_ContainsString()``
+* ``PyDict_GetItemRef()``
+* ``PyDict_GetItemStringRef()``
+* ``PyDict_Pop()``
+* ``PyDict_PopString()``
+* ``PyImport_AddModuleRef()``
+* ``PyList_Clear()``
+* ``PyList_Extend()``
+* ``PyLong_AsInt()``
+* ``PyMapping_GetOptionalItem()``
+* ``PyMapping_GetOptionalItemString()``
+* ``PyMapping_HasKeyStringWithError()``
+* ``PyMapping_HasKeyWithError()``
+* ``PyModule_Add()``
+* ``PyObject_ClearManagedDict()``
+* ``PyObject_GetOptionalAttr()``
+* ``PyObject_GetOptionalAttrString()``
+* ``PyObject_HasAttrStringWithError()``
+* ``PyObject_HasAttrWithError()``
+* ``PyObject_Vectorcall()``
+* ``PyObject_VisitManagedDict()``
+* ``PyThreadState_GetUnchecked()``
+* ``PyTime_AsSecondsDouble()``
+* ``PyTime_Monotonic()``
+* ``PyTime_PerfCounter()``
+* ``PyTime_Time()``
+* ``PyUnicode_EqualToUTF8()``
+* ``PyUnicode_EqualToUTF8AndSize()``
+* ``PyVectorcall_NARGS()``
+* ``PyWeakref_GetRef()``
+* ``Py_GetConstant()``
+* ``Py_GetConstantBorrowed()``
+* ``Py_HashPointer()``
+* ``Py_IsFinalizing()``
+
+
 Unsupported removed C API functions
 ===================================
 
