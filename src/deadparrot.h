@@ -134,7 +134,7 @@ DeadPyAPI_FUNC(PyObject*) _DeadPyObject_FastCall(
     PyObject *func,
     PyObject *const *args,
     Py_ssize_t nargs);
-#if (!defined(DeadPy_NO_ALIAS) \
+#if (!defined(DeadPy_NO_ALIAS) && !defined(_PyObject_FastCall) \
      && (PY_VERSION_HEX >= 0x030D0000 \
          || defined(PYPY_VERSION) && PY_VERSION_HEX < 0x03090000))
 #  define _PyObject_FastCall _DeadPyObject_FastCall
