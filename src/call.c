@@ -29,7 +29,9 @@ PyObject*
 DeadPyEval_CallObjectWithKeywords(PyObject *callable,
                                   PyObject *args, PyObject *kwargs)
 {
-#if PY_VERSION_HEX >= 0x030D00A1
+#if PY_VERSION_HEX < 0x030D00A1
+    return PyEval_CallObjectWithKeywords(callable, args, kwargs);
+#else
     if (args != NULL && !PyTuple_Check(args)) {
         PyErr_SetString(PyExc_TypeError,
                         "argument list must be a tuple");
@@ -54,8 +56,6 @@ DeadPyEval_CallObjectWithKeywords(PyObject *callable,
     else {
         return PyObject_Call(callable, args, kwargs);
     }
-#else
-    return PyEval_CallObjectWithKeywords(callable, args, kwargs);
 #endif
 }
 
@@ -63,10 +63,10 @@ DeadPyEval_CallObjectWithKeywords(PyObject *callable,
 PyObject*
 DeadPyEval_CallObject(PyObject *callable, PyObject *args)
 {
-#if PY_VERSION_HEX >= 0x030D00A1
-    return DeadPyEval_CallObjectWithKeywords(callable, args, NULL);
-#else
+#if PY_VERSION_HEX < 0x030D00A1
     return PyEval_CallObject(callable, args);
+#else
+    return DeadPyEval_CallObjectWithKeywords(callable, args, NULL);
 #endif
 }
 
@@ -74,15 +74,15 @@ DeadPyEval_CallObject(PyObject *callable, PyObject *args)
 PyObject*
 DeadPyCFunction_Call(PyObject *callable, PyObject *args, PyObject *kwargs)
 {
-#if PY_VERSION_HEX >= 0x030D00A1
-    return PyObject_Call(callable, args, NULL);
-#else
+#if PY_VERSION_HEX < 0x030D00A1
     return PyCFunction_Call(callable, args, kwargs);
+#else
+    return PyObject_Call(callable, args, NULL);
 #endif
 }
 
 PyObject *
-dead_build_args_tuple(const char *format, va_list vargs)
+dead_build_vargs_tuple(const char *format, va_list vargs)
 {
     PyObject *args = Py_VaBuildValue(format, vargs);
     if (args == NULL) {
@@ -103,7 +103,7 @@ DeadPyEval_CallFunction(PyObject *callable, const char *format, ...)
 {
     va_list vargs;
     va_start(vargs, format);
-    PyObject *args = dead_build_args_tuple(format, vargs);
+    PyObject *args = dead_build_vargs_tuple(format, vargs);
     va_end(vargs);
     if (args == NULL) {
         return NULL;
@@ -125,7 +125,7 @@ DeadPyEval_CallMethod(PyObject *obj, const char *name, const char *format, ...)
 
     va_list vargs;
     va_start(vargs, format);
-    PyObject *args = dead_build_args_tuple(format, vargs);
+    PyObject *args = dead_build_vargs_tuple(format, vargs);
     va_end(vargs);
     if (args == NULL) {
         return NULL;
@@ -149,7 +149,8 @@ _DeadPyObject_FastCall(PyObject *func, PyObject *const *args, Py_ssize_t nargs)
 {
 #if PY_VERSION_HEX >= 0x030D00A1
     return PyObject_Vectorcall(func, args, (size_t)nargs, NULL);
-#elif PY_VERSION_HEX >= 0x03090000 && !defined(PYPY_VERSION)
+#elif ((PY_VERSION_HEX >= 0x03060000 && !defined(PYPY_VERSION)) \
+       || (PY_VERSION_HEX >= 0x03090000 && defined(PYPY_VERSION)))
     return _PyObject_FastCall(func, (PyObject **)args, nargs);
 #else
     // PyPy for Python 3.8 and older
