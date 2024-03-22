@@ -83,6 +83,11 @@ DeadPyAPI_FUNC(int) DeadPy_IsTrue(PyObject *x);
 #  define Py_IsTrue(x) DeadPy_Is((x), Py_True)
 #endif
 
+DeadPyAPI_FUNC(int) DeadPy_IS_TYPE(PyObject *ob, PyTypeObject *type);
+#if PY_VERSION_HEX < 0x030900A4 && !defined(Py_IS_TYPE) && !defined(DeadPy_NO_ALIAS)
+#  define Py_IS_TYPE DeadPy_IS_TYPE
+#endif
+
 
 // --- Call ------------------------------------------------------------------
 

@@ -77,6 +77,10 @@ test_object(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
     // Py_SET_SIZE
     Py_SET_SIZE(obj, Py_SIZE(obj));
 
+    // Py_IS_TYPE()
+    assert(Py_IS_TYPE(obj, Py_TYPE(obj)));
+    assert(!Py_IS_TYPE(obj, &PyUnicode_Type));
+
     assert(Py_REFCNT(obj) == refcnt);
     Py_DECREF(obj);
     Py_RETURN_NONE;

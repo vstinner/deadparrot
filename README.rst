@@ -79,6 +79,11 @@ PyModule
 PyObject
 --------
 
+* ``Py_IS_TYPE()``
+* ``Py_Is()``
+* ``Py_IsFalse()``
+* ``Py_IsNone()``
+* ``Py_IsTrue()``
 * ``Py_NewRef()``
 * ``Py_SET_REFCNT()``
 * ``Py_SET_SIZE()``
