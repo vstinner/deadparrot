@@ -214,7 +214,7 @@ typedef Py_UNICODE DeadPy_UNICODE;
 #endif
 
 DeadPyAPI_FUNC(DeadPy_UNICODE) DeadPyUnicode_GetMax(void);
-#if PY_VERSION_HEX >= 0x030A0000 && !defined(DeadPy_NO_ALIAS)
+#if PY_VERSION_HEX >= 0x030A0000 && !defined(PyUnicode_GetMax) && !defined(DeadPy_NO_ALIAS)
 #  define PyUnicode_GetMax DeadPyUnicode_GetMax
 #endif
 
