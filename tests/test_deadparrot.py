@@ -192,7 +192,7 @@ def build_libdeadparrot(verbose):
         "-D", "CMAKE_BUILD_TYPE=%s" % config,
     ]
 
-    if PYTHON3 or PYPY:
+    if (PYTHON3 or PYPY) and not MS_WINDOWS:
         # Pass directly the include directory since CMake FindPython prefers
         # the release ABI to the debug ABI, and the debug ABI should also be
         # tested.
