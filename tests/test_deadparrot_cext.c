@@ -348,7 +348,9 @@ test_call(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
         if (meth == NULL) {
             goto error;
         }
+#ifndef PYPY_VERSION
         assert(PyCFunction_Check(meth));
+#endif
 
         res = PyCFunction_Call(meth, strip_args, NULL);
         Py_DECREF(meth);
@@ -408,7 +410,7 @@ test_unicode(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
     DeadPy_UNICODE unicode_max = PyUnicode_GetMax();
     assert(unicode_max == 0x10ffff || unicode_max == 0xffff);
 
-#if PY_VERSION_HEX >= 0x03000000
+#if PY_VERSION_HEX >= 0x03000000 && !defined(PYPY_VERSION)
     PyObject *str = PyUnicode_FromString("abc");
     if (str == NULL) {
         return NULL;

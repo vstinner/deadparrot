@@ -3,6 +3,7 @@
 #include "private.h"
 
 
+#ifndef PYPY_VERSION
 PyFrameObject* DeadPyThreadState_GetFrame(PyThreadState *tstate)
 {
 #if PY_VERSION_HEX >= 0x030900B1
@@ -12,11 +13,12 @@ PyFrameObject* DeadPyThreadState_GetFrame(PyThreadState *tstate)
     return _DeadPy_CAST(PyFrameObject *, Py_XNewRef(tstate->frame));
 #endif
 }
+#endif
 
 
 PyInterpreterState* DeadPyThreadState_GetInterpreter(PyThreadState *tstate)
 {
-#if PY_VERSION_HEX >= 0x030900A5
+#if PY_VERSION_HEX >= 0x030900A5 && !defined(PYPY_VERSION)
     return PyThreadState_GetInterpreter(tstate);
 #else
     assert(tstate != _Py_NULL);

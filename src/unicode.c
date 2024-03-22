@@ -15,8 +15,7 @@ DeadPyUnicode_GetMax(void)
 #endif
 }
 
-
-#if PY_VERSION_HEX >= 0x03000000
+#if PY_VERSION_HEX >= 0x03000000 && !defined(PYPY_VERSION)
 void
 DeadPyUnicode_InternImmortal(PyObject **p)
 {

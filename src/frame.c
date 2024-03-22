@@ -3,6 +3,7 @@
 #include "private.h"
 
 
+#ifndef PYPY_VERSION
 PyCodeObject* DeadPyFrame_GetCode(PyFrameObject *frame)
 {
 #if PY_VERSION_HEX >= 0x030900B1
@@ -13,7 +14,10 @@ PyCodeObject* DeadPyFrame_GetCode(PyFrameObject *frame)
     return _DeadPy_CAST(PyCodeObject*, Py_NewRef(frame->f_code));
 #endif
 }
+#endif
 
+
+#ifndef PYPY_VERSION
 PyFrameObject* DeadPyFrame_GetBack(PyFrameObject *frame)
 {
 #if PY_VERSION_HEX >= 0x030900B1
@@ -23,7 +27,10 @@ PyFrameObject* DeadPyFrame_GetBack(PyFrameObject *frame)
     return _DeadPy_CAST(PyFrameObject*, Py_XNewRef(frame->f_back));
 #endif
 }
+#endif
 
+
+#ifndef PYPY_VERSION
 PyObject* DeadPyFrame_GetLocals(PyFrameObject *frame)
 {
 #if PY_VERSION_HEX >= 0x030B00A7
@@ -39,6 +46,8 @@ PyObject* DeadPyFrame_GetLocals(PyFrameObject *frame)
     return Py_NewRef(frame->f_locals);
 #endif
 }
+#endif
+
 
 PyObject* DeadPyFrame_GetGlobals(PyFrameObject *frame)
 {
@@ -49,6 +58,8 @@ PyObject* DeadPyFrame_GetGlobals(PyFrameObject *frame)
 #endif
 }
 
+
+#ifndef PYPY_VERSION
 PyObject* DeadPyFrame_GetBuiltins(PyFrameObject *frame)
 {
 #if PY_VERSION_HEX >= 0x030B00A7
@@ -57,7 +68,10 @@ PyObject* DeadPyFrame_GetBuiltins(PyFrameObject *frame)
     return Py_NewRef(frame->f_builtins);
 #endif
 }
+#endif
 
+
+#ifndef PYPY_VERSION
 int DeadPyFrame_GetLasti(PyFrameObject *frame)
 {
 #if PY_VERSION_HEX >= 0x030B00B1
@@ -76,7 +90,10 @@ int DeadPyFrame_GetLasti(PyFrameObject *frame)
 #  endif
 #endif
 }
+#endif
 
+
+#ifndef PYPY_VERSION
 PyObject* DeadPyFrame_GetVar(PyFrameObject *frame, PyObject *name)
 {
 #if PY_VERSION_HEX >= 0x030C00A2
@@ -109,7 +126,10 @@ PyObject* DeadPyFrame_GetVar(PyFrameObject *frame, PyObject *name)
     return Py_NewRef(value);
 #endif
 }
+#endif
 
+
+#ifndef PYPY_VERSION
 PyObject* DeadPyFrame_GetVarString(PyFrameObject *frame, const char *name)
 {
 #if PY_VERSION_HEX >= 0x030C00A2
@@ -129,3 +149,4 @@ PyObject* DeadPyFrame_GetVarString(PyFrameObject *frame, const char *name)
     return value;
 #endif
 }
+#endif
