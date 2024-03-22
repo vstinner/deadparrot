@@ -130,14 +130,14 @@ DeadPyAPI_FUNC(PyObject*) DeadPyEval_CallMethod(
 #endif
 
 
-#if PY_VERSION_HEX >= 0x03060000
 DeadPyAPI_FUNC(PyObject*) _DeadPyObject_FastCall(
     PyObject *func,
     PyObject *const *args,
     Py_ssize_t nargs);
-#if PY_VERSION_HEX >= 0x030D0000 && !defined(DeadPy_NO_ALIAS)
+#if (!defined(DeadPy_NO_ALIAS) \
+     && (PY_VERSION_HEX >= 0x030D0000 \
+         || defined(PYPY_VERSION) && PY_VERSION_HEX < 0x03090000))
 #  define _PyObject_FastCall _DeadPyObject_FastCall
-#endif
 #endif
 
 
