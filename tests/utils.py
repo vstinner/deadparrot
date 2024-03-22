@@ -54,7 +54,7 @@ def run_command(cmd, verbose=False, check=True, env=None):
             sys.exit(exitcode)
         return exitcode
 
-    print("Run %s" % ' '.join(shlex_quote(arg) for arg in cmd))
+    #print("Run %s" % ' '.join(shlex_quote(arg) for arg in cmd))
     if hasattr(subprocess, 'run'):
         proc = subprocess.run(cmd, env=env)
     else:
