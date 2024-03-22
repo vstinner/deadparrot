@@ -21,6 +21,8 @@ from utils import (
     LIBPARROT_LIBDIR, CMAKE_CONFIG, DEBUG)
 
 
+PYTHON3 = (sys.version_info >= (3,))
+PYPY = ('PyPy' in sys.version)
 GDB = False
 
 
@@ -190,7 +192,7 @@ def build_libdeadparrot(verbose):
         "-D", "CMAKE_BUILD_TYPE=%s" % config,
     ]
 
-    if sys.version_info >= (3,):
+    if PYTHON3 or PYPY:
         # Pass directly the include directory since CMake FindPython prefers
         # the release ABI to the debug ABI, and the debug ABI should also be
         # tested.
