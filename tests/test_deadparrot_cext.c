@@ -459,7 +459,7 @@ test_module_add_type(PyObject *module)
     ASSERT_REFCNT(Py_REFCNT(type) == refcnt + 1);
 #endif
 
-    if (check_module_attr(module, type_name, _Py_CAST(PyObject*, type)) < 0) {
+    if (check_module_attr(module, type_name, _PyObject_CAST(type)) < 0) {
         return -1;
     }
     ASSERT_REFCNT(Py_REFCNT(type) == refcnt);

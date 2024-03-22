@@ -4,6 +4,12 @@
 extern "C" {
 #endif
 
+#ifndef _Py_CAST
+#  define _Py_CAST(type, expr) ((type)(expr))
+#endif
+#ifndef _PyObject_CAST
+#  define _PyObject_CAST(op) _Py_CAST(PyObject*, (op))
+#endif
 
 // Ignore deprecation warnings of Py_DEPRECATED()
 #ifdef _Py_COMP_DIAG_IGNORE_DEPR_DECLS

@@ -47,7 +47,7 @@ int DeadPyModule_AddType(PyObject *module, PyTypeObject *type)
         name = dot + 1;
     }
 
-    return PyModule_AddObjectRef(module, name, _PyObject_CAST(type));
+    return DeadPyModule_AddObjectRef(module, name, _PyObject_CAST(type));
 #endif
 }
 
@@ -58,7 +58,7 @@ DeadPyModule_Add(PyObject *mod, const char *name, PyObject *value)
 #if PY_VERSION_HEX >= 0x030D00A1
     return PyModule_Add(mod, name, value);
 #else
-    int res = PyModule_AddObjectRef(mod, name, value);
+    int res = DeadPyModule_AddObjectRef(mod, name, value);
     Py_XDECREF(value);
     return res;
 #endif
