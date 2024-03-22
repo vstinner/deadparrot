@@ -160,6 +160,24 @@ DeadPyAPI_FUNC(void) DeadPyEval_InitThreads(void);
 #endif
 
 
+// --- GC --------------------------------------------------------------------
+
+#ifndef PYPY_VERSION
+   DeadPyAPI_FUNC(int) DeadPyObject_GC_IsTracked(PyObject* obj);
+#  if PY_VERSION_HEX < 0x030900A6 && !defined(DeadPy_NO_ALIAS)
+#    define PyObject_GC_IsTracked DeadPyObject_GC_IsTracked
+#  endif
+
+#  if PY_VERSION_HEX >= 0x030400F0
+     DeadPyAPI_FUNC(int) DeadPyObject_GC_IsFinalized(PyObject *obj);
+#    if PY_VERSION_HEX < 0x030900A6 && !defined(DeadPy_NO_ALIAS)
+#      define PyObject_GC_IsFinalized DeadPyObject_GC_IsFinalized
+#    endif
+#  endif
+
+#endif
+
+
 // --- PyInterpreterState ----------------------------------------------------
 
 DeadPyAPI_FUNC(PyInterpreterState*) DeadPyInterpreterState_Get(void);

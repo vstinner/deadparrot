@@ -48,6 +48,12 @@ PyFrame
 * ``PyFrame_GetVar()``
 * ``PyFrame_GetVarString()``
 
+GC
+--
+
+* ``PyObject_GC_IsFinalized()``
+* ``PyObject_GC_IsTracked()``
+
 PyInterpreterState
 ------------------
 

@@ -567,6 +567,30 @@ error:
 }
 
 
+#ifndef PYPY_VERSION
+static PyObject *
+test_gc(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
+{
+    PyObject *tuple = PyTuple_New(1);
+    Py_INCREF(Py_None);
+    PyTuple_SET_ITEM(tuple, 0, Py_None);
+
+    // test PyObject_GC_IsTracked()
+    int tracked = PyObject_GC_IsTracked(tuple);
+    assert(tracked);
+
+#if PY_VERSION_HEX >= 0x030400F0
+    // test PyObject_GC_IsFinalized()
+    int finalized = PyObject_GC_IsFinalized(tuple);
+    assert(!finalized);
+#endif
+
+    Py_DECREF(tuple);
+    Py_RETURN_NONE;
+}
+#endif
+
+
 static struct PyMethodDef methods[] = {
     {"test_object", test_object, METH_NOARGS, NULL},
     {"test_py_is", test_py_is, METH_NOARGS, _Py_NULL},
@@ -579,6 +603,9 @@ static struct PyMethodDef methods[] = {
     {"test_eval", test_eval, METH_NOARGS, NULL},
     {"test_unicode", test_unicode, METH_NOARGS, NULL},
     {"test_module", test_module, METH_NOARGS, _Py_NULL},
+#ifndef PYPY_VERSION
+    {"test_gc", test_gc, METH_NOARGS, _Py_NULL},
+#endif
     {NULL, NULL, 0, NULL}
 };
 
