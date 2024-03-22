@@ -36,6 +36,18 @@ Call
 * ``PyObject_CallOneArg()``
 * ``_PyObject_FastCall()``: Python >= 3.6
 
+Float
+-----
+
+* ``PyFPE_END_PROTECT()``
+* ``PyFPE_START_PROTECT()``
+* ``PyFloat_Pack2()``
+* ``PyFloat_Pack4()``
+* ``PyFloat_Pack8()``
+* ``PyFloat_Unpack2()``
+* ``PyFloat_Unpack4()``
+* ``PyFloat_Unpack8()``
+
 PyFrame
 -------
 

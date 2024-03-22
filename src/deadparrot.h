@@ -164,6 +164,26 @@ DeadPyAPI_FUNC(void) DeadPyEval_InitThreads(void);
 #  define PyFPE_END_PROTECT(v)
 #endif
 
+#ifndef PYPY_VERSION
+   DeadPyAPI_FUNC(int) DeadPyFloat_Pack2(double x, char *p, int le);
+   DeadPyAPI_FUNC(double) DeadPyFloat_Unpack2(const char *p, int le);
+#  if 0x030600B1 <= PY_VERSION_HEX && PY_VERSION_HEX <= 0x030B00A1 && !defined(DeadPy_NO_ALIAS)
+#    define PyFloat_Pack2 DeadPyFloat_Pack2
+#    define PyFloat_Unpack2 DeadPyFloat_Unpack2
+#  endif
+
+   DeadPyAPI_FUNC(int) DeadPyFloat_Pack4(double x, char *p, int le);
+   DeadPyAPI_FUNC(int) DeadPyFloat_Pack8(double x, char *p, int le);
+   DeadPyAPI_FUNC(double) DeadPyFloat_Unpack4(const char *p, int le);
+   DeadPyAPI_FUNC(double) DeadPyFloat_Unpack8(const char *p, int le);
+#  if PY_VERSION_HEX <= 0x030B00A1 && !defined(DeadPy_NO_ALIAS)
+#    define PyFloat_Pack4 DeadPyFloat_Pack4
+#    define PyFloat_Pack8 DeadPyFloat_Pack8
+#    define PyFloat_Unpack4 DeadPyFloat_Unpack4
+#    define PyFloat_Unpack8 DeadPyFloat_Unpack8
+#  endif
+#endif
+
 
 // --- GC --------------------------------------------------------------------
 
