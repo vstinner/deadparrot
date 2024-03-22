@@ -149,7 +149,7 @@ _DeadPyObject_FastCall(PyObject *func, PyObject *const *args, Py_ssize_t nargs)
 {
 #if PY_VERSION_HEX >= 0x030D00A1
     return PyObject_Vectorcall(func, args, (size_t)nargs, NULL);
-#elif !defined(PYPY_VERSION) && PY_VERSION_HEX >= 0x03090000
+#elif PY_VERSION_HEX >= 0x03090000 && !defined(PYPY_VERSION)
     return _PyObject_FastCall(func, (PyObject **)args, nargs);
 #else
     // PyPy for Python 3.8 and older
