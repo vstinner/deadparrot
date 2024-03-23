@@ -162,6 +162,27 @@ DeadPyAPI_FUNC(PyObject*) _DeadPyObject_FastCall(
 #  endif
 #endif
 
+// --- Dict ------------------------------------------------------------------
+
+DeadPyAPI_FUNC(int) DeadPyDict_GetItemRef(PyObject *mp, PyObject *key, PyObject **result);
+DeadPyAPI_FUNC(int) DeadPyDict_GetItemStringRef(PyObject *mp, const char *key, PyObject **result);
+#if PY_VERSION_HEX < 0x030D00A1 && !defined(DeadPy_NO_ALIAS)
+#  define PyDict_GetItemRef DeadPyDict_GetItemRef
+#  define PyDict_GetItemStringRef DeadPyDict_GetItemStringRef
+#endif
+
+DeadPyAPI_FUNC(int) DeadPyDict_ContainsString(PyObject *op, const char *key);
+#if PY_VERSION_HEX < 0x030D00A1 && !defined(DeadPy_NO_ALIAS)
+#  define PyDict_ContainsString DeadPyDict_ContainsString
+#endif
+
+DeadPyAPI_FUNC(int) DeadPyDict_Pop(PyObject *dict, PyObject *key, PyObject **result);
+DeadPyAPI_FUNC(int) DeadPyDict_PopString(PyObject *dict, const char *key, PyObject **result);
+#if PY_VERSION_HEX < 0x030D00A2 && !defined(DeadPy_NO_ALIAS)
+#  define PyDict_Pop DeadPyDict_Pop
+#  define PyDict_PopString DeadPyDict_PopString
+#endif
+
 // --- Eval ------------------------------------------------------------------
 
 DeadPyAPI_FUNC(void) DeadPyEval_InitThreads(void);

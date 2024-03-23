@@ -874,6 +874,200 @@ test_weakref(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 }
 
 
+static PyObject *
+test_dict_api(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
+{
+    assert(!PyErr_Occurred());
+
+    PyObject *dict = NULL, *key = NULL, *missing_key = NULL, *value = NULL;
+    PyObject *invalid_key = NULL;
+    PyObject *invalid_dict = NULL;
+    PyObject *get_value = NULL;
+    int res;
+
+    // test PyDict_New()
+    dict = PyDict_New();
+    if (dict == NULL) {
+        goto error;
+    }
+
+    key = PyUnicode_FromString("key");
+    if (key == NULL) {
+        goto error;
+    }
+    invalid_dict = key;  // borrowed reference
+
+    missing_key = PyUnicode_FromString("missing_key");
+    if (missing_key == NULL) {
+        goto error;
+    }
+
+    invalid_key = PyList_New(0);  // not hashable key
+    if (invalid_key == NULL) {
+        goto error;
+    }
+
+    value = PyUnicode_FromString("value");
+    if (value == NULL) {
+        goto error;
+    }
+
+    res = PyDict_SetItemString(dict, "key", value);
+    if (res < 0) {
+        goto error;
+    }
+    assert(res == 0);
+
+    // test PyDict_Contains()
+    assert(PyDict_Contains(dict, key) == 1);
+    assert(PyDict_Contains(dict, missing_key) == 0);
+
+    // test PyDict_ContainsString()
+    assert(PyDict_ContainsString(dict, "key") == 1);
+    assert(PyDict_ContainsString(dict, "missing_key") == 0);
+    assert(PyDict_ContainsString(dict, "\xff") == -1);
+    assert(PyErr_ExceptionMatches(PyExc_UnicodeDecodeError));
+    PyErr_Clear();
+
+    // test PyDict_GetItemRef(), key is present
+    get_value = UNINITIALIZED_OBJ;
+    assert(PyDict_GetItemRef(dict, key, &get_value) == 1);
+    assert(get_value == value);
+    Py_DECREF(get_value);
+
+    // test PyDict_GetItemStringRef(), key is present
+    get_value = UNINITIALIZED_OBJ;
+    assert(PyDict_GetItemStringRef(dict, "key", &get_value) == 1);
+    assert(get_value == value);
+    Py_DECREF(get_value);
+
+    // test PyDict_GetItemRef(), missing key
+    get_value = UNINITIALIZED_OBJ;
+    assert(PyDict_GetItemRef(dict, missing_key, &get_value) == 0);
+    assert(!PyErr_Occurred());
+    assert(get_value == NULL);
+
+    // test PyDict_GetItemStringRef(), missing key
+    get_value = UNINITIALIZED_OBJ;
+    assert(PyDict_GetItemStringRef(dict, "missing_key", &get_value) == 0);
+    assert(!PyErr_Occurred());
+    assert(get_value == NULL);
+
+    // test PyDict_GetItemRef(), invalid dict
+    get_value = UNINITIALIZED_OBJ;
+    assert(PyDict_GetItemRef(invalid_dict, key, &get_value) == -1);
+    assert(PyErr_ExceptionMatches(PyExc_SystemError));
+    PyErr_Clear();
+    assert(get_value == NULL);
+
+    // test PyDict_GetItemStringRef(), invalid dict
+    get_value = UNINITIALIZED_OBJ;
+    assert(PyDict_GetItemStringRef(invalid_dict, "key", &get_value) == -1);
+    assert(PyErr_ExceptionMatches(PyExc_SystemError));
+    PyErr_Clear();
+    assert(get_value == NULL);
+
+    // test PyDict_GetItemRef(), invalid key
+    get_value = UNINITIALIZED_OBJ;
+    assert(PyDict_GetItemRef(dict, invalid_key, &get_value) == -1);
+    assert(PyErr_ExceptionMatches(PyExc_TypeError));
+    PyErr_Clear();
+    assert(get_value == NULL);
+
+    Py_DECREF(dict);
+    Py_DECREF(key);
+    Py_DECREF(missing_key);
+    Py_DECREF(value);
+    Py_DECREF(invalid_key);
+
+    Py_RETURN_NONE;
+
+error:
+    Py_XDECREF(dict);
+    Py_XDECREF(key);
+    Py_XDECREF(missing_key);
+    Py_XDECREF(value);
+    Py_XDECREF(invalid_key);
+    return NULL;
+}
+
+
+static PyObject *
+test_dict_pop(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
+{
+    PyObject *dict = PyDict_New();
+    if (dict == NULL) {
+        return NULL;
+    }
+
+    PyObject *key = PyUnicode_FromString("key");
+    assert(key != NULL);
+    PyObject *value = PyUnicode_FromString("abc");
+    assert(value != NULL);
+
+    // test PyDict_Pop(), get the removed value, key is present
+    assert(PyDict_SetItem(dict, key, value) == 0);
+    PyObject *removed = UNINITIALIZED_OBJ;
+    assert(PyDict_Pop(dict, key, &removed) == 1);
+    assert(removed == value);
+    Py_DECREF(removed);
+
+    // test PyDict_Pop(), ignore the removed value, key is present
+    assert(PyDict_SetItem(dict, key, value) == 0);
+    assert(PyDict_Pop(dict, key, NULL) == 1);
+
+    // test PyDict_Pop(), key is missing
+    removed = UNINITIALIZED_OBJ;
+    assert(PyDict_Pop(dict, key, &removed) == 0);
+    assert(removed == NULL);
+    assert(PyDict_Pop(dict, key, NULL) == 0);
+
+    // test PyDict_PopString(), get the removed value, key is present
+    assert(PyDict_SetItem(dict, key, value) == 0);
+    removed = UNINITIALIZED_OBJ;
+    assert(PyDict_PopString(dict, "key", &removed) == 1);
+    assert(removed == value);
+    Py_DECREF(removed);
+
+    // test PyDict_PopString(), ignore the removed value, key is present
+    assert(PyDict_SetItem(dict, key, value) == 0);
+    assert(PyDict_PopString(dict, "key", NULL) == 1);
+
+    // test PyDict_PopString(), key is missing
+    removed = UNINITIALIZED_OBJ;
+    assert(PyDict_PopString(dict, "key", &removed) == 0);
+    assert(removed == NULL);
+    assert(PyDict_PopString(dict, "key", NULL) == 0);
+
+    // dict error
+    removed = UNINITIALIZED_OBJ;
+    assert(PyDict_Pop(key, key, &removed) == -1);
+    assert(removed == NULL);
+    assert(PyErr_ExceptionMatches(PyExc_SystemError));
+    PyErr_Clear();
+
+    assert(PyDict_Pop(key, key, NULL) == -1);
+    assert(PyErr_ExceptionMatches(PyExc_SystemError));
+    PyErr_Clear();
+
+    removed = UNINITIALIZED_OBJ;
+    assert(PyDict_PopString(key, "key", &removed) == -1);
+    assert(removed == NULL);
+    assert(PyErr_ExceptionMatches(PyExc_SystemError));
+    PyErr_Clear();
+
+    assert(PyDict_PopString(key, "key", NULL) == -1);
+    assert(PyErr_ExceptionMatches(PyExc_SystemError));
+    PyErr_Clear();
+
+    // exit
+    Py_DECREF(dict);
+    Py_DECREF(key);
+    Py_DECREF(value);
+    Py_RETURN_NONE;
+}
+
+
 static struct PyMethodDef methods[] = {
     {"test_object", test_object, METH_NOARGS, NULL},
     {"test_py_is", test_py_is, METH_NOARGS, _Py_NULL},
@@ -899,6 +1093,8 @@ static struct PyMethodDef methods[] = {
     {"test_list", test_list, METH_NOARGS, _Py_NULL},
     {"test_long_api", test_long_api, METH_NOARGS, _Py_NULL},
     {"test_weakref", test_weakref, METH_NOARGS, _Py_NULL},
+    {"test_dict_api", test_dict_api, METH_NOARGS, _Py_NULL},
+    {"test_dict_pop", test_dict_pop, METH_NOARGS, _Py_NULL},
     {NULL, NULL, 0, NULL}
 };
 

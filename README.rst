@@ -44,6 +44,15 @@ Code
 * ``PyCode_GetFreevars()``
 * ``PyCode_GetVarnames()``
 
+Dict
+----
+
+* ``PyDict_ContainsString()``
+* ``PyDict_GetItemRef()``
+* ``PyDict_GetItemStringRef()``
+* ``PyDict_Pop()``
+* ``PyDict_PopString()``
+
 Float
 -----
 
@@ -173,11 +182,6 @@ Change the destination to install to a specific directory::
 Unsupported new C API functions (TODO)
 ======================================
 
-* ``PyDict_ContainsString()``
-* ``PyDict_GetItemRef()``
-* ``PyDict_GetItemStringRef()``
-* ``PyDict_Pop()``
-* ``PyDict_PopString()``
 * ``PyMapping_GetOptionalItem()``
 * ``PyMapping_GetOptionalItemString()``
 * ``PyMapping_HasKeyStringWithError()``
