@@ -115,24 +115,15 @@ Import
 
 * ``PyImport_AddModuleRef()``
 
-PyThreadState
--------------
-
-* ``PyThreadState_EnterTracing()``
-* ``PyThreadState_GetFrame()``
-* ``PyThreadState_GetID()``
-* ``PyThreadState_GetInterpreter()``
-* ``PyThreadState_LeaveTracing()``
-
-PyModule
---------
+Module
+------
 
 * ``PyModule_AddObjectRef()``
 * ``PyModule_AddType()``
 * ``PyModule_Add()``
 
-PyObject
---------
+Object
+------
 
 * ``Py_IS_TYPE()``
 * ``Py_Is()``
@@ -144,9 +135,20 @@ PyObject
 * ``Py_SET_SIZE()``
 * ``Py_SET_TYPE()``
 * ``Py_XNewRef()``
+* ``Py_GetConstant()``
+* ``Py_GetConstantBorrowed()``
 
-PyUnicode
----------
+Thread State
+------------
+
+* ``PyThreadState_EnterTracing()``
+* ``PyThreadState_GetFrame()``
+* ``PyThreadState_GetID()``
+* ``PyThreadState_GetInterpreter()``
+* ``PyThreadState_LeaveTracing()``
+
+Unicode
+-------
 
 * ``PyUnicode_GetMax()``
 * ``PyUnicode_InternImmortal()``: Python >= 3.0
@@ -210,8 +212,6 @@ Unsupported new C API functions (TODO)
 * ``PyUnicode_EqualToUTF8()``
 * ``PyUnicode_EqualToUTF8AndSize()``
 * ``PyVectorcall_NARGS()``
-* ``Py_GetConstant()``
-* ``Py_GetConstantBorrowed()``
 
 
 Unsupported removed C API functions

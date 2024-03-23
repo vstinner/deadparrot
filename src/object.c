@@ -66,3 +66,72 @@ int DeadPy_IS_TYPE(PyObject *ob, PyTypeObject *type) {
     return Py_TYPE(ob) == type;
 #endif
 }
+
+PyObject* DeadPy_GetConstant(unsigned int constant_id)
+{
+#if PY_VERSION_HEX >= 0x030D00A6
+    return Py_GetConstant(constant_id);
+#else
+    static PyObject* constants[Py_CONSTANT_EMPTY_TUPLE + 1] = {NULL};
+
+    if (constants[Py_CONSTANT_NONE] == NULL) {
+        constants[Py_CONSTANT_NONE] = Py_None;
+        constants[Py_CONSTANT_FALSE] = Py_False;
+        constants[Py_CONSTANT_TRUE] = Py_True;
+        constants[Py_CONSTANT_ELLIPSIS] = Py_Ellipsis;
+        constants[Py_CONSTANT_NOT_IMPLEMENTED] = Py_NotImplemented;
+
+        constants[Py_CONSTANT_ZERO] = PyLong_FromLong(0);
+        if (constants[Py_CONSTANT_ZERO] == NULL) {
+            goto fatal_error;
+        }
+
+        constants[Py_CONSTANT_ONE] = PyLong_FromLong(1);
+        if (constants[Py_CONSTANT_ONE] == NULL) {
+            goto fatal_error;
+        }
+
+        constants[Py_CONSTANT_EMPTY_STR] = PyUnicode_FromStringAndSize("", 0);
+        if (constants[Py_CONSTANT_EMPTY_STR] == NULL) {
+            goto fatal_error;
+        }
+
+        constants[Py_CONSTANT_EMPTY_BYTES] = PyBytes_FromStringAndSize("", 0);
+        if (constants[Py_CONSTANT_EMPTY_BYTES] == NULL) {
+            goto fatal_error;
+        }
+
+        constants[Py_CONSTANT_EMPTY_TUPLE] = PyTuple_New(0);
+        if (constants[Py_CONSTANT_EMPTY_TUPLE] == NULL) {
+            goto fatal_error;
+        }
+        // goto dance to avoid compiler warnings about Py_FatalError()
+        goto init_done;
+
+fatal_error:
+        // This case should never happen
+        Py_FatalError("Py_GetConstant() failed to get constants");
+    }
+
+init_done:
+    if (constant_id <= Py_CONSTANT_EMPTY_TUPLE) {
+        return Py_NewRef(constants[constant_id]);
+    }
+    else {
+        PyErr_BadInternalCall();
+        return NULL;
+    }
+#endif
+}
+
+
+PyObject* DeadPy_GetConstantBorrowed(unsigned int constant_id)
+{
+#if PY_VERSION_HEX >= 0x030D00A6
+    return Py_GetConstantBorrowed(constant_id);
+#else
+    PyObject *obj = DeadPy_GetConstant(constant_id);
+    Py_XDECREF(obj);
+    return obj;
+#endif
+}

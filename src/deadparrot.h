@@ -89,6 +89,28 @@ DeadPyAPI_FUNC(int) DeadPy_IS_TYPE(PyObject *ob, PyTypeObject *type);
 #endif
 
 
+#if PY_VERSION_HEX < 0x030D00A6
+#  define Py_CONSTANT_NONE 0
+#  define Py_CONSTANT_FALSE 1
+#  define Py_CONSTANT_TRUE 2
+#  define Py_CONSTANT_ELLIPSIS 3
+#  define Py_CONSTANT_NOT_IMPLEMENTED 4
+#  define Py_CONSTANT_ZERO 5
+#  define Py_CONSTANT_ONE 6
+#  define Py_CONSTANT_EMPTY_STR 7
+#  define Py_CONSTANT_EMPTY_BYTES 8
+#  define Py_CONSTANT_EMPTY_TUPLE 9
+#endif
+
+DeadPyAPI_FUNC(PyObject*) DeadPy_GetConstant(unsigned int constant_id);
+DeadPyAPI_FUNC(PyObject*) DeadPy_GetConstantBorrowed(unsigned int constant_id);
+#if PY_VERSION_HEX < 0x030D00A6 && !defined(DeadPy_NO_ALIAS)
+#  define Py_GetConstant DeadPy_GetConstant
+#  define Py_GetConstantBorrowed DeadPy_GetConstantBorrowed
+#endif
+
+
+
 // --- Call ------------------------------------------------------------------
 
 DeadPyAPI_FUNC(PyObject*) DeadPyObject_CallNoArgs(PyObject *func);
