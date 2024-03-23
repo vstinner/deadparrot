@@ -145,6 +145,7 @@ Thread State
 * ``PyThreadState_GetFrame()``
 * ``PyThreadState_GetID()``
 * ``PyThreadState_GetInterpreter()``
+* ``PyThreadState_GetUnchecked()``
 * ``PyThreadState_LeaveTracing()``
 
 Unicode
@@ -206,7 +207,6 @@ Unsupported new C API functions (TODO)
 * ``PyObject_HasAttrWithError()``
 * ``PyObject_Vectorcall()``
 * ``PyObject_VisitManagedDict()``
-* ``PyThreadState_GetUnchecked()``
 * ``PyTime_AsSecondsDouble()``
 * ``PyTime_Monotonic()``
 * ``PyTime_PerfCounter()``

@@ -335,6 +335,11 @@ DeadPyAPI_FUNC(PyObject*) DeadPyImport_AddModuleRef(const char *name);
 
 // --- PyThreadState ---------------------------------------------------------
 
+DeadPyAPI_FUNC(PyThreadState*) DeadPyThreadState_GetUnchecked(void);
+#if (PY_VERSION_HEX >= 0x03050200 && PY_VERSION_HEX < 0x030D00A1)  && !defined(DeadPy_NO_ALIAS)
+#  define PyThreadState_GetUnchecked DeadPyThreadState_GetUnchecked
+#endif
+
 DeadPyAPI_FUNC(PyInterpreterState*) DeadPyThreadState_GetInterpreter(PyThreadState *tstate);
 #if (PY_VERSION_HEX < 0x030900A5 || defined(PYPY_VERSION)) && !defined(DeadPy_NO_ALIAS)
 #  define PyThreadState_GetInterpreter DeadPyThreadState_GetInterpreter

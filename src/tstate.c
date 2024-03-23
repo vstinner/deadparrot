@@ -3,6 +3,18 @@
 #include "private.h"
 
 
+#if PY_VERSION_HEX >= 0x03050200
+PyThreadState* DeadPyThreadState_GetUnchecked(void)
+{
+#if PY_VERSION_HEX >= 0x030D00A1
+    return PyThreadState_GetUnchecked();
+#else
+    return _PyThreadState_UncheckedGet();
+#endif
+}
+#endif
+
+
 #ifndef PYPY_VERSION
 PyFrameObject* DeadPyThreadState_GetFrame(PyThreadState *tstate)
 {
