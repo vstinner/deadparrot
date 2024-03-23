@@ -32,7 +32,7 @@ int
 DeadPyDict_GetItemStringRef(PyObject *mp, const char *key, PyObject **result)
 {
 #if PY_VERSION_HEX >= 0x030D00A1
-    return PyDict_GetItemRef(mp, key, result);
+    return PyDict_GetItemStringRef(mp, key, result);
 #else
     int res;
 #  if PY_VERSION_HEX >= 0x03000000
