@@ -80,6 +80,11 @@ List
 * ``PyList_Clear()``
 * ``PyList_Extend()``
 
+Long
+----
+
+* ``PyLong_AsInt()``
+
 PyInterpreterState
 ------------------
 
@@ -169,12 +174,10 @@ Unsupported new C API functions (TODO)
 * ``PyDict_GetItemStringRef()``
 * ``PyDict_Pop()``
 * ``PyDict_PopString()``
-* ``PyLong_AsInt()``
 * ``PyMapping_GetOptionalItem()``
 * ``PyMapping_GetOptionalItemString()``
 * ``PyMapping_HasKeyStringWithError()``
 * ``PyMapping_HasKeyWithError()``
-* ``PyModule_Add()``
 * ``PyObject_ClearManagedDict()``
 * ``PyObject_GetOptionalAttr()``
 * ``PyObject_GetOptionalAttrString()``

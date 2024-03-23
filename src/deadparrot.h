@@ -227,6 +227,14 @@ DeadPyAPI_FUNC(int) DeadPyList_Clear(PyObject *list);
 #  define PyList_Clear DeadPyList_Clear
 #endif
 
+// --- Long ------------------------------------------------------------------
+
+DeadPyAPI_FUNC(int) DeadPyLong_AsInt(PyObject *obj);
+#if PY_VERSION_HEX < 0x030D00A1 && !defined(DeadPy_NO_ALIAS)
+#  define PyLong_AsInt DeadPyLong_AsInt
+#endif
+
+
 // --- PyInterpreterState ----------------------------------------------------
 
 DeadPyAPI_FUNC(PyInterpreterState*) DeadPyInterpreterState_Get(void);
