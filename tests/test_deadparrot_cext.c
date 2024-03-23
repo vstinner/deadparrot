@@ -1068,6 +1068,48 @@ test_dict_pop(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 }
 
 
+static PyObject *
+test_hash(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
+{
+    void *ptr0 = NULL;
+    assert(Py_HashPointer(ptr0) == 0);
+
+#ifndef PYPY_VERSION
+#if SIZEOF_VOID_P == 8
+    void *ptr1 = (void*)(uintptr_t)0xABCDEF1234567890;
+    assert(Py_HashPointer(ptr1) == (uintptr_t)0x0ABCDEF123456789);
+#else
+    void *ptr1 = (void*)(uintptr_t)0xDEADCAFE;
+    assert(Py_HashPointer(ptr1) == (uintptr_t)0xEDEADCAF);
+#endif
+#else
+    // PyPy
+#if SIZEOF_VOID_P == 8
+    void *ptr1 = (void*)(uintptr_t)0xABCDEF1234567890;
+#else
+    void *ptr1 = (void*)(uintptr_t)0xDEADCAFE;
+#endif
+    assert(Py_HashPointer(ptr1) == (Py_hash_t)ptr1);
+#endif
+
+#if ((!defined(PYPY_VERSION) && PY_VERSION_HEX >= 0x030400B1) \
+     || (defined(PYPY_VERSION) && PY_VERSION_HEX >= 0x03070000 \
+         && PYPY_VERSION_NUM >= 0x07090000))
+    // Just check that constants are available
+    size_t bits = PyHASH_BITS;
+    assert(bits >= 8);
+    size_t mod = PyHASH_MODULUS;
+    assert(mod >= 7);
+    size_t inf = PyHASH_INF;
+    assert(inf != 0);
+    size_t imag = PyHASH_IMAG;
+    assert(imag != 0);
+#endif
+
+    Py_RETURN_NONE;
+}
+
+
 static struct PyMethodDef methods[] = {
     {"test_object", test_object, METH_NOARGS, NULL},
     {"test_py_is", test_py_is, METH_NOARGS, _Py_NULL},
@@ -1095,6 +1137,7 @@ static struct PyMethodDef methods[] = {
     {"test_weakref", test_weakref, METH_NOARGS, _Py_NULL},
     {"test_dict_api", test_dict_api, METH_NOARGS, _Py_NULL},
     {"test_dict_pop", test_dict_pop, METH_NOARGS, _Py_NULL},
+    {"test_hash", test_hash, METH_NOARGS, _Py_NULL},
     {NULL, NULL, 0, NULL}
 };
 

@@ -94,6 +94,15 @@ Long
 
 * ``PyLong_AsInt()``
 
+Hash
+----
+
+* ``PyHASH_BITS`` constant
+* ``PyHASH_IMAG`` constant
+* ``PyHASH_INF`` constant
+* ``PyHASH_MODULUS`` constant
+* ``Py_HashPointer()``
+
 Interpreter
 -----------
 
@@ -203,7 +212,6 @@ Unsupported new C API functions (TODO)
 * ``PyVectorcall_NARGS()``
 * ``Py_GetConstant()``
 * ``Py_GetConstantBorrowed()``
-* ``Py_HashPointer()``
 
 
 Unsupported removed C API functions

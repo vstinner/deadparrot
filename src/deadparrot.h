@@ -239,6 +239,32 @@ DeadPyAPI_FUNC(void) DeadPyEval_InitThreads(void);
 #endif
 
 
+// --- Hash ------------------------------------------------------------------
+
+#if PY_VERSION_HEX < 0x030200A4
+// Python 3.2.0a4 added Py_hash_t type
+typedef Py_ssize_t Py_hash_t;
+#endif
+
+DeadPyAPI_FUNC(Py_hash_t) DeadPy_HashPointer(const void *ptr);
+#if PY_VERSION_HEX < 0x030D00A3 && !defined(DeadPy_NO_ALIAS)
+#  define Py_HashPointer DeadPy_HashPointer
+#endif
+
+
+// gh-111389 added hash constants to Python 3.13.0a5. These constants were
+// added first as private macros to Python 3.4.0b1 and PyPy 7.3.9.
+#if (!defined(PyHASH_BITS) \
+     && ((!defined(PYPY_VERSION) && PY_VERSION_HEX >= 0x030400B1) \
+         || (defined(PYPY_VERSION) && PY_VERSION_HEX >= 0x03070000 \
+             && PYPY_VERSION_NUM >= 0x07090000)))
+#  define PyHASH_BITS _PyHASH_BITS
+#  define PyHASH_MODULUS _PyHASH_MODULUS
+#  define PyHASH_INF _PyHASH_INF
+#  define PyHASH_IMAG _PyHASH_IMAG
+#endif
+
+
 // --- List ------------------------------------------------------------------
 
 DeadPyAPI_FUNC(int) DeadPyList_Extend(PyObject *list, PyObject *iterable);
