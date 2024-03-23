@@ -5,10 +5,10 @@ deadparrot
 deadparrot library
 ==================
 
-The deadparrot library provides old removed C API functions to new Python
-versions.
+The deadparrot project is a C API compatibility shared library: provide new
+functions to old Python versions and old functions to new Python versions.
 
-Support Python 2.7 and Python 3.6-3.13. PyPy is not supported.
+Support Python 2.7, Python 3.6-3.13, PyPy 2.7 and PyPy 3.6-3.10.
 
 This project is distributed under the `Zero Clause BSD (0BSD) license
 <https://opensource.org/licenses/0BSD>`_ and is covered by the `PSF Code of
