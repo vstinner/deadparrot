@@ -35,6 +35,7 @@ add_library(${PROJECT_NAME} SHARED
     gc.c
     import.c
     interp.c
+    list.c
     module.c
     object.c
     tstate.c

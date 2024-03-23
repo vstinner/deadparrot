@@ -74,6 +74,12 @@ GC
 * ``PyObject_GC_IsFinalized()``
 * ``PyObject_GC_IsTracked()``
 
+List
+----
+
+* ``PyList_Clear()``
+* ``PyList_Extend()``
+
 PyInterpreterState
 ------------------
 
@@ -163,8 +169,6 @@ Unsupported new C API functions (TODO)
 * ``PyDict_GetItemStringRef()``
 * ``PyDict_Pop()``
 * ``PyDict_PopString()``
-* ``PyList_Clear()``
-* ``PyList_Extend()``
 * ``PyLong_AsInt()``
 * ``PyMapping_GetOptionalItem()``
 * ``PyMapping_GetOptionalItemString()``

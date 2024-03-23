@@ -218,6 +218,15 @@ DeadPyAPI_FUNC(void) DeadPyEval_InitThreads(void);
 #endif
 
 
+// --- List ------------------------------------------------------------------
+
+DeadPyAPI_FUNC(int) DeadPyList_Extend(PyObject *list, PyObject *iterable);
+DeadPyAPI_FUNC(int) DeadPyList_Clear(PyObject *list);
+#if PY_VERSION_HEX < 0x030D00A2 && !defined(DeadPy_NO_ALIAS)
+#  define PyList_Extend DeadPyList_Extend
+#  define PyList_Clear DeadPyList_Clear
+#endif
+
 // --- PyInterpreterState ----------------------------------------------------
 
 DeadPyAPI_FUNC(PyInterpreterState*) DeadPyInterpreterState_Get(void);
