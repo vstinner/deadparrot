@@ -208,175 +208,175 @@ Unsupported removed C API functions
 Removed in Python 3.13
 ----------------------
 
-* PyEval_AcquireLock()
-* PyEval_ReleaseLock()
-* PyEval_ThreadsInitialized()
-* PyObject_AsCharBuffer()
-* PyObject_AsReadBuffer()
-* PyObject_AsWriteBuffer()
-* PyObject_CheckReadBuffer()
-* PySys_AddWarnOption()
-* PySys_AddWarnOptionUnicode()
-* PySys_AddXOption()
-* PySys_HasWarnOptions()
-* PySys_SetArgv()
-* PySys_SetArgvEx()
-* PySys_SetPath()
-* Py_SetPath()
-* Py_SetProgramName()
-* Py_SetPythonHome()
-* Py_SetStandardStreamEncoding()
-* Py_TRASHCAN_SAFE_BEGIN
-* Py_TRASHCAN_SAFE_END
-* _Py_SetProgramFullPath()
+* ``PyEval_AcquireLock()``
+* ``PyEval_ReleaseLock()``
+* ``PyEval_ThreadsInitialized()``
+* ``PyObject_AsCharBuffer()``
+* ``PyObject_AsReadBuffer()``
+* ``PyObject_AsWriteBuffer()``
+* ``PyObject_CheckReadBuffer()``
+* ``PySys_AddWarnOption()``
+* ``PySys_AddWarnOptionUnicode()``
+* ``PySys_AddXOption()``
+* ``PySys_HasWarnOptions()``
+* ``PySys_SetArgv()``
+* ``PySys_SetArgvEx()``
+* ``PySys_SetPath()``
+* ``Py_SetPath()``
+* ``Py_SetProgramName()``
+* ``Py_SetPythonHome()``
+* ``Py_SetStandardStreamEncoding()``
+* ``Py_TRASHCAN_SAFE_BEGIN``
+* ``Py_TRASHCAN_SAFE_END``
+* ``_Py_SetProgramFullPath()``
 
 Removed in Python 3.12
 ----------------------
 
-* PyUnicode_AS_DATA()
-* PyUnicode_AS_UNICODE()
-* PyUnicode_AsUnicode()
-* PyUnicode_AsUnicodeAndSize()
-* PyUnicode_FromUnicode()
-* PyUnicode_GET_DATA_SIZE()
-* PyUnicode_GET_SIZE()
-* PyUnicode_GetSize()
-* PyUnicode_WCHAR_KIND()
+* ``PyUnicode_AS_DATA()``
+* ``PyUnicode_AS_UNICODE()``
+* ``PyUnicode_AsUnicode()``
+* ``PyUnicode_AsUnicodeAndSize()``
+* ``PyUnicode_FromUnicode()``
+* ``PyUnicode_GET_DATA_SIZE()``
+* ``PyUnicode_GET_SIZE()``
+* ``PyUnicode_GetSize()``
+* ``PyUnicode_WCHAR_KIND()``
 
 Removed in Python 3.11
 ----------------------
 
-* HAVE_PY_SET_53BIT_PRECISION
-* PyFrame_BlockPop()
-* PyFrame_BlockSetup()
-* PyHeapType_GET_MEMBERS()
-* PyUnicode_Encode()
-* PyUnicode_EncodeASCII()
-* PyUnicode_EncodeCharmap()
-* PyUnicode_EncodeDecimal()
-* PyUnicode_EncodeLatin1()
-* PyUnicode_EncodeRawUnicodeEscape()
-* PyUnicode_EncodeUTF16()
-* PyUnicode_EncodeUTF32()
-* PyUnicode_EncodeUTF7()
-* PyUnicode_EncodeUTF8()
-* PyUnicode_EncodeUnicodeEscape()
-* PyUnicode_TransformDecimalToASCII()
-* PyUnicode_TranslateCharmap()
-* Py_ADJUST_ERANGE1()
-* Py_ADJUST_ERANGE2()
-* Py_FORCE_DOUBLE()
-* Py_OVERFLOWED()
-* Py_SET_ERANGE_IF_OVERFLOW()
-* Py_SET_ERRNO_ON_MATH_ERROR()
-* Py_UNICODE_COPY()
-* Py_UNICODE_FILL()
+* ``HAVE_PY_SET_53BIT_PRECISION``
+* ``PyFrame_BlockPop()``
+* ``PyFrame_BlockSetup()``
+* ``PyHeapType_GET_MEMBERS()``
+* ``PyUnicode_Encode()``
+* ``PyUnicode_EncodeASCII()``
+* ``PyUnicode_EncodeCharmap()``
+* ``PyUnicode_EncodeDecimal()``
+* ``PyUnicode_EncodeLatin1()``
+* ``PyUnicode_EncodeRawUnicodeEscape()``
+* ``PyUnicode_EncodeUTF16()``
+* ``PyUnicode_EncodeUTF32()``
+* ``PyUnicode_EncodeUTF7()``
+* ``PyUnicode_EncodeUTF8()``
+* ``PyUnicode_EncodeUnicodeEscape()``
+* ``PyUnicode_TransformDecimalToASCII()``
+* ``PyUnicode_TranslateCharmap()``
+* ``Py_ADJUST_ERANGE1()``
+* ``Py_ADJUST_ERANGE2()``
+* ``Py_FORCE_DOUBLE()``
+* ``Py_OVERFLOWED()``
+* ``Py_SET_ERANGE_IF_OVERFLOW()``
+* ``Py_SET_ERRNO_ON_MATH_ERROR()``
+* ``Py_UNICODE_COPY()``
+* ``Py_UNICODE_FILL()``
 
 Removed in Python 3.10
 ----------------------
 
-* PyAST_Compile()
-* PyAST_CompileEx()
-* PyAST_CompileObject()
-* PyAST_Validate()
-* PyArena_AddPyObject()
-* PyArena_Free()
-* PyArena_Malloc()
-* PyArena_New()
-* PyFuture_FromAST()
-* PyFuture_FromASTObject()
-* PyLong_FromUnicode()
-* PyOS_InitInterrupts()
-* PyParser_ASTFromFile()
-* PyParser_ASTFromFileObject()
-* PyParser_ASTFromFilename()
-* PyParser_ASTFromString()
-* PyParser_ASTFromStringObject()
-* PyST_GetScope()
-* PySymtable_Build()
-* PySymtable_BuildObject()
-* PySymtable_Free()
-* PyUnicode_AsUnicodeCopy()
-* Py_ALLOW_RECURSION
-* Py_END_ALLOW_RECURSION
-* Py_SymtableString()
-* Py_SymtableStringObject()
-* Py_UNICODE_strcat()
-* Py_UNICODE_strchr()
-* Py_UNICODE_strcmp()
-* Py_UNICODE_strcpy()
-* Py_UNICODE_strlen()
-* Py_UNICODE_strncmp()
-* Py_UNICODE_strncpy()
-* Py_UNICODE_strrchr()
+* ``PyAST_Compile()``
+* ``PyAST_CompileEx()``
+* ``PyAST_CompileObject()``
+* ``PyAST_Validate()``
+* ``PyArena_AddPyObject()``
+* ``PyArena_Free()``
+* ``PyArena_Malloc()``
+* ``PyArena_New()``
+* ``PyFuture_FromAST()``
+* ``PyFuture_FromASTObject()``
+* ``PyLong_FromUnicode()``
+* ``PyOS_InitInterrupts()``
+* ``PyParser_ASTFromFile()``
+* ``PyParser_ASTFromFileObject()``
+* ``PyParser_ASTFromFilename()``
+* ``PyParser_ASTFromString()``
+* ``PyParser_ASTFromStringObject()``
+* ``PyST_GetScope()``
+* ``PySymtable_Build()``
+* ``PySymtable_BuildObject()``
+* ``PySymtable_Free()``
+* ``PyUnicode_AsUnicodeCopy()``
+* ``Py_ALLOW_RECURSION``
+* ``Py_END_ALLOW_RECURSION``
+* ``Py_SymtableString()``
+* ``Py_SymtableStringObject()``
+* ``Py_UNICODE_strcat()``
+* ``Py_UNICODE_strchr()``
+* ``Py_UNICODE_strcmp()``
+* ``Py_UNICODE_strcpy()``
+* ``Py_UNICODE_strlen()``
+* ``Py_UNICODE_strncmp()``
+* ``Py_UNICODE_strncpy()``
+* ``Py_UNICODE_strrchr()``
 
 Removed in Python 3.9
 ---------------------
 
-* PyAsyncGen_ClearFreeLists()
-* PyCFunction_ClearFreeList()
-* PyCmpWrapper_Type()
-* PyContext_ClearFreeList()
-* PyDict_ClearFreeList()
-* PyFloat_ClearFreeList()
-* PyFrame_ClearFreeList()
-* PyFrame_ExtendStack()
-* PyList_ClearFreeList()
-* PyMethod_ClearFreeList()
-* PyNoArgsFunction()
-* PyNullImporter_Type()
-* PySet_ClearFreeList()
-* PySortWrapper_Type()
-* PyTuple_ClearFreeList()
-* PyUnicode_ClearFreeList()
-* Py_UNICODE_MATCH()
-* _PyAIterWrapper_Type()
-* _PyBytes_InsertThousandsGrouping()
-* _PyBytes_InsertThousandsGroupingLocale()
-* _PyFloat_Digits(): implementation was removed in Python 2.6
-* _PyFloat_DigitsInit(): implementation was removed in Python 2.6
-* _PyFloat_Repr(): implementation was removed in Python 3.1
-* _PyThreadState_GetFrame()
-* _PyUnicode_ClearStaticStrings()
-* _Py_InitializeFromArgs()
-* _Py_InitializeFromWideArgs()
+* ``PyAsyncGen_ClearFreeLists()``
+* ``PyCFunction_ClearFreeList()``
+* ``PyCmpWrapper_Type()``
+* ``PyContext_ClearFreeList()``
+* ``PyDict_ClearFreeList()``
+* ``PyFloat_ClearFreeList()``
+* ``PyFrame_ClearFreeList()``
+* ``PyFrame_ExtendStack()``
+* ``PyList_ClearFreeList()``
+* ``PyMethod_ClearFreeList()``
+* ``PyNoArgsFunction()``
+* ``PyNullImporter_Type()``
+* ``PySet_ClearFreeList()``
+* ``PySortWrapper_Type()``
+* ``PyTuple_ClearFreeList()``
+* ``PyUnicode_ClearFreeList()``
+* ``Py_UNICODE_MATCH()``
+* ``_PyAIterWrapper_Type()``
+* ``_PyBytes_InsertThousandsGrouping()``
+* ``_PyBytes_InsertThousandsGroupingLocale()``
+* ``_PyFloat_Digits()``: implementation was removed in Python 2.6
+* ``_PyFloat_DigitsInit()``: implementation was removed in Python 2.6
+* ``_PyFloat_Repr()``: implementation was removed in Python 3.1
+* ``_PyThreadState_GetFrame()``
+* ``_PyUnicode_ClearStaticStrings()``
+* ``_Py_InitializeFromArgs()``
+* ``_Py_InitializeFromWideArgs()``
 
 Removed in Python 3.8
 ---------------------
 
-* PyByteArray_Init()
-* PyByteArray_Fini()
+* ``PyByteArray_Init()``
+* ``PyByteArray_Fini()``
 
 Removed in Python 3.2
 ---------------------
 
-* PyCObject_AsVoidPtr()
-* PyCObject_Check()
-* PyCObject_FromVoidPtr()
-* PyCObject_FromVoidPtrAndDesc()
-* PyCObject_GetDesc()
-* PyCObject_Import()
-* PyCObject_SetVoidPtr()
-* PyOS_ascii_atof()
-* PyOS_ascii_formatd()
-* PyOS_ascii_strtod()
+* ``PyCObject_AsVoidPtr()``
+* ``PyCObject_Check()``
+* ``PyCObject_FromVoidPtr()``
+* ``PyCObject_FromVoidPtrAndDesc()``
+* ``PyCObject_GetDesc()``
+* ``PyCObject_Import()``
+* ``PyCObject_SetVoidPtr()``
+* ``PyOS_ascii_atof()``
+* ``PyOS_ascii_formatd()``
+* ``PyOS_ascii_strtod()``
 
 Removed in Python 3.1
 ---------------------
 
-* PyNumber_Int()
+* ``PyNumber_Int()``
 
 Removed in Python 3.0
 ---------------------
 
-* PyString prefix was replaced with PyUnicode
-* PyInt prefix was replaced with PyLong
-* METH_OLDARGS
-* PyMember_Get()
-* PyMember_Set()
-* PyNumber_Coerce()
-* PyNumber_CoerceEx()
-* WITH_CYCLE_GC
+* ``PyString`` prefix replaced with ``PyUnicode``
+* ``PyInt`` prefix replaced with ``PyLong``
+* ``METH_OLDARGS``
+* ``PyMember_Get()``
+* ``PyMember_Set()``
+* ``PyNumber_Coerce()``
+* ``PyNumber_CoerceEx()``
+* ``WITH_CYCLE_GC``
 * Many other C API removals.
 
 
@@ -386,14 +386,14 @@ Unsupported removed C API
 Removed in Python 3.10
 ----------------------
 
-* PyThreadState.use_tracing member
-* _Py_CheckRecursionLimit variable
+* ``PyThreadState.use_tracing`` member
+* ``_Py_CheckRecursionLimit`` variable
 
 Removed in Python 3.9
 ---------------------
 
-* PyTypeObject.tp_print member
-* _PyRuntime.getframe member
+* ``PyTypeObject.tp_print`` member
+* ``_PyRuntime.getframe`` member
 
 Changed in Python 3.8
 ---------------------
@@ -404,14 +404,14 @@ Changed in Python 3.8
 Removed in Python 3.7
 ---------------------
 
-* PyExc_RecursionErrorInst variable
+* ``PyExc_RecursionErrorInst`` variable
 
 Removed in Python 3.4
 ---------------------
 
-* PyThreadState.tick_counter member
+* ``PyThreadState.tick_counter`` member
 
 Removed in Python 3.2
 ---------------------
 
-* PyCObject_Type variable
+* ``PyCObject_Type`` variable
