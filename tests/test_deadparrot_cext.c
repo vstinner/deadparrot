@@ -651,6 +651,60 @@ test_float_pack(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
 #endif  // !PYPY_VERSION
 
 
+#if !defined(PYPY_VERSION)
+static PyObject *
+test_code(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
+{
+    PyThreadState *tstate = PyThreadState_Get();
+    PyFrameObject *frame = PyThreadState_GetFrame(tstate);
+    if (frame == _Py_NULL) {
+        PyErr_SetString(PyExc_AssertionError, "PyThreadState_GetFrame failed");
+        return _Py_NULL;
+    }
+    PyCodeObject *code = PyFrame_GetCode(frame);
+
+    // PyCode_GetCode()
+    {
+        PyObject *co_code = PyCode_GetCode(code);
+        assert(co_code != _Py_NULL);
+        assert(PyBytes_Check(co_code));
+        Py_DECREF(co_code);
+    }
+
+    // PyCode_GetVarnames
+    {
+        PyObject *co_varnames = PyCode_GetVarnames(code);
+        assert(co_varnames != _Py_NULL);
+        assert(PyTuple_CheckExact(co_varnames));
+        assert(PyTuple_GET_SIZE(co_varnames) != 0);
+        Py_DECREF(co_varnames);
+    }
+
+    // PyCode_GetCellvars
+    {
+        PyObject *co_cellvars = PyCode_GetCellvars(code);
+        assert(co_cellvars != _Py_NULL);
+        assert(PyTuple_CheckExact(co_cellvars));
+        assert(PyTuple_GET_SIZE(co_cellvars) == 0);
+        Py_DECREF(co_cellvars);
+    }
+
+    // PyCode_GetFreevars
+    {
+        PyObject *co_freevars = PyCode_GetFreevars(code);
+        assert(co_freevars != _Py_NULL);
+        assert(PyTuple_CheckExact(co_freevars));
+        assert(PyTuple_GET_SIZE(co_freevars) == 0);
+        Py_DECREF(co_freevars);
+    }
+
+    Py_DECREF(code);
+    Py_DECREF(frame);
+    Py_RETURN_NONE;
+}
+#endif
+
+
 static struct PyMethodDef methods[] = {
     {"test_object", test_object, METH_NOARGS, NULL},
     {"test_py_is", test_py_is, METH_NOARGS, _Py_NULL},
@@ -668,6 +722,9 @@ static struct PyMethodDef methods[] = {
 #endif
 #ifndef PYPY_VERSION
     {"test_float_pack", test_float_pack, METH_NOARGS, _Py_NULL},
+#endif
+#ifndef PYPY_VERSION
+    {"test_code", test_code, METH_NOARGS, _Py_NULL},
 #endif
     {NULL, NULL, 0, NULL}
 };

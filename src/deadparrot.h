@@ -147,6 +147,21 @@ DeadPyAPI_FUNC(PyObject*) _DeadPyObject_FastCall(
 #endif
 
 
+// --- Code ------------------------------------------------------------------
+
+#ifndef PYPY_VERSION
+   DeadPyAPI_FUNC(PyObject*) DeadPyCode_GetCode(PyCodeObject *code);
+   DeadPyAPI_FUNC(PyObject*) DeadPyCode_GetVarnames(PyCodeObject *code);
+   DeadPyAPI_FUNC(PyObject*) DeadPyCode_GetFreevars(PyCodeObject *code);
+   DeadPyAPI_FUNC(PyObject*) DeadPyCode_GetCellvars(PyCodeObject *code);
+#  if PY_VERSION_HEX < 0x030B0000  && !defined(DeadPy_NO_ALIAS)
+#    define PyCode_GetCode DeadPyCode_GetCode
+#    define PyCode_GetVarnames DeadPyCode_GetVarnames
+#    define PyCode_GetFreevars DeadPyCode_GetFreevars
+#    define PyCode_GetCellvars DeadPyCode_GetCellvars
+#  endif
+#endif
+
 // --- Eval ------------------------------------------------------------------
 
 DeadPyAPI_FUNC(void) DeadPyEval_InitThreads(void);

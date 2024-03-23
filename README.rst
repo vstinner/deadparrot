@@ -36,6 +36,14 @@ Call
 * ``PyObject_CallOneArg()``
 * ``_PyObject_FastCall()``: Python >= 3.6
 
+Code
+----
+
+* ``PyCode_GetCellvars()``
+* ``PyCode_GetCode()``
+* ``PyCode_GetFreevars()``
+* ``PyCode_GetVarnames()``
+
 Float
 -----
 
@@ -145,10 +153,6 @@ Change the destination to install to a specific directory::
 Unsupported new C API functions (TODO)
 ======================================
 
-* ``PyCode_GetCellvars()``
-* ``PyCode_GetCode()``
-* ``PyCode_GetFreevars()``
-* ``PyCode_GetVarnames()``
 * ``PyDict_ContainsString()``
 * ``PyDict_GetItemRef()``
 * ``PyDict_GetItemStringRef()``
