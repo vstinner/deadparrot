@@ -85,11 +85,12 @@ Long
 
 * ``PyLong_AsInt()``
 
-PyInterpreterState
-------------------
+Interpreter
+-----------
 
 * ``PyInterpreterState_Get()``
 * ``_PyInterpreterState_Get()``
+* ``Py_IsFinalizing()``
 
 Import
 ------
@@ -199,7 +200,6 @@ Unsupported new C API functions (TODO)
 * ``Py_GetConstant()``
 * ``Py_GetConstantBorrowed()``
 * ``Py_HashPointer()``
-* ``Py_IsFinalizing()``
 
 
 Unsupported removed C API functions

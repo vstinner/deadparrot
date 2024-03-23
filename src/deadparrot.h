@@ -248,6 +248,14 @@ DeadPyAPI_FUNC(PyInterpreterState*) DeadPyInterpreterState_Get(void);
 #  define _PyInterpreterState_Get PyInterpreterState_Get
 #endif
 
+#if 0x03020000 <= PY_VERSION_HEX
+   DeadPyAPI_FUNC(int) DeadPy_IsFinalizing(void);
+#  if ((PY_VERSION_HEX < 0x030D00A1 || defined(PYPY_VERSION_NUM)) \
+       && !defined(DeadPy_NO_ALIAS))
+#    define Py_IsFinalizing DeadPy_IsFinalizing
+#  endif
+#endif
+
 
 // --- Import ----------------------------------------------------------------
 

@@ -277,6 +277,11 @@ test_interpreter(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
     PyInterpreterState *interp3 = _PyInterpreterState_Get();
     assert(interp3 == interp);
 
+    // test Py_IsFinalizing()
+#if 0x03020000 <= PY_VERSION_HEX
+    assert(Py_IsFinalizing() == 0);
+#endif
+
     Py_RETURN_NONE;
 }
 
