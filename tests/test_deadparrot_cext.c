@@ -705,6 +705,30 @@ test_code(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
 #endif
 
 
+static PyObject *
+test_import(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
+{
+    PyObject *mod = PyImport_ImportModule("sys");
+    if (mod == _Py_NULL) {
+        return _Py_NULL;
+    }
+    Py_ssize_t refcnt = Py_REFCNT(mod);
+
+    // test PyImport_AddModuleRef()
+    PyObject *mod2 = PyImport_AddModuleRef("sys");
+    if (mod2 == _Py_NULL) {
+        return _Py_NULL;
+    }
+    assert(PyModule_Check(mod2));
+    assert(Py_REFCNT(mod) == (refcnt + 1));
+
+    Py_DECREF(mod2);
+    Py_DECREF(mod);
+
+    Py_RETURN_NONE;
+}
+
+
 static struct PyMethodDef methods[] = {
     {"test_object", test_object, METH_NOARGS, NULL},
     {"test_py_is", test_py_is, METH_NOARGS, _Py_NULL},
@@ -726,6 +750,7 @@ static struct PyMethodDef methods[] = {
 #ifndef PYPY_VERSION
     {"test_code", test_code, METH_NOARGS, _Py_NULL},
 #endif
+    {"test_import", test_import, METH_NOARGS, _Py_NULL},
     {NULL, NULL, 0, NULL}
 };
 

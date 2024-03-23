@@ -232,6 +232,13 @@ DeadPyAPI_FUNC(PyInterpreterState*) DeadPyInterpreterState_Get(void);
 #endif
 
 
+// --- Import ----------------------------------------------------------------
+
+DeadPyAPI_FUNC(PyObject*) DeadPyImport_AddModuleRef(const char *name);
+#if PY_VERSION_HEX < 0x030D00A0 && !defined(DeadPy_NO_ALIAS)
+#  define PyImport_AddModuleRef DeadPyImport_AddModuleRef
+#endif
+
 // --- PyThreadState ---------------------------------------------------------
 
 DeadPyAPI_FUNC(PyInterpreterState*) DeadPyThreadState_GetInterpreter(PyThreadState *tstate);

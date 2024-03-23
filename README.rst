@@ -80,6 +80,11 @@ PyInterpreterState
 * ``PyInterpreterState_Get()``
 * ``_PyInterpreterState_Get()``
 
+Import
+------
+
+* ``PyImport_AddModuleRef()``
+
 PyThreadState
 -------------
 
@@ -158,7 +163,6 @@ Unsupported new C API functions (TODO)
 * ``PyDict_GetItemStringRef()``
 * ``PyDict_Pop()``
 * ``PyDict_PopString()``
-* ``PyImport_AddModuleRef()``
 * ``PyList_Clear()``
 * ``PyList_Extend()``
 * ``PyLong_AsInt()``

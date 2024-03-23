@@ -33,6 +33,7 @@ add_library(${PROJECT_NAME} SHARED
     float.c
     frame.c
     gc.c
+    import.c
     interp.c
     module.c
     object.c
