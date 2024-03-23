@@ -150,6 +150,8 @@ Thread State
 Unicode
 -------
 
+* ``PyUnicode_EqualToUTF8()``
+* ``PyUnicode_EqualToUTF8AndSize()``
 * ``PyUnicode_GetMax()``
 * ``PyUnicode_InternImmortal()``: Python >= 3.0
 
@@ -209,8 +211,6 @@ Unsupported new C API functions (TODO)
 * ``PyTime_Monotonic()``
 * ``PyTime_PerfCounter()``
 * ``PyTime_Time()``
-* ``PyUnicode_EqualToUTF8()``
-* ``PyUnicode_EqualToUTF8AndSize()``
 * ``PyVectorcall_NARGS()``
 
 

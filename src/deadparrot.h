@@ -385,6 +385,13 @@ DeadPyAPI_FUNC(DeadPy_UNICODE) DeadPyUnicode_GetMax(void);
 #  endif
 #endif
 
+DeadPyAPI_FUNC(int) DeadPyUnicode_EqualToUTF8AndSize(PyObject *unicode, const char *str, Py_ssize_t str_len);
+DeadPyAPI_FUNC(int) DeadPyUnicode_EqualToUTF8(PyObject *unicode, const char *str);
+#if PY_VERSION_HEX < 0x030D00A1
+#  define PyUnicode_EqualToUTF8AndSize DeadPyUnicode_EqualToUTF8AndSize
+#  define PyUnicode_EqualToUTF8 DeadPyUnicode_EqualToUTF8
+#endif
+
 
 // --- Frame -----------------------------------------------------------------
 

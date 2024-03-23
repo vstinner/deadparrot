@@ -435,6 +435,41 @@ test_unicode(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 }
 
 
+static PyObject *
+test_unicode_equalutf8(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
+{
+    PyObject *abc = PyUnicode_FromString("abc");
+    if (abc == NULL) {
+        return NULL;
+    }
+
+    PyObject *abc0def = PyUnicode_FromStringAndSize("abc\0def", 7);
+    if (abc0def == NULL) {
+        Py_DECREF(abc);
+        return NULL;
+    }
+
+    // PyUnicode_EqualToUTF8() and PyUnicode_EqualToUTF8AndSize() can be called
+    // with an exception raised and they must not clear the current exception.
+    PyErr_NoMemory();
+
+    assert(PyUnicode_EqualToUTF8AndSize(abc, "abc", 3) == 1);
+    assert(PyUnicode_EqualToUTF8AndSize(abc, "Python", 6) == 0);
+    assert(PyUnicode_EqualToUTF8AndSize(abc0def, "abc\0def", 7) == 1);
+
+    assert(PyUnicode_EqualToUTF8(abc, "abc") == 1);
+    assert(PyUnicode_EqualToUTF8(abc, "Python") == 0);
+    assert(PyUnicode_EqualToUTF8(abc0def, "abc\0def") == 0);
+
+    assert(PyErr_ExceptionMatches(PyExc_MemoryError));
+    PyErr_Clear();
+
+    Py_DECREF(abc);
+    Py_DECREF(abc0def);
+    Py_RETURN_NONE;
+}
+
+
 static int
 check_module_attr(PyObject *module, const char *name, PyObject *expected)
 {
@@ -1206,6 +1241,7 @@ static struct PyMethodDef methods[] = {
     {"test_call", test_call, METH_NOARGS, NULL},
     {"test_eval", test_eval, METH_NOARGS, NULL},
     {"test_unicode", test_unicode, METH_NOARGS, NULL},
+    {"test_unicode_equalutf8", test_unicode_equalutf8, METH_NOARGS, NULL},
     {"test_module", test_module, METH_NOARGS, _Py_NULL},
 #ifndef PYPY_VERSION
     {"test_gc", test_gc, METH_NOARGS, _Py_NULL},
