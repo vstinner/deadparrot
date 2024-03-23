@@ -41,6 +41,7 @@ add_library(${PROJECT_NAME} SHARED
     object.c
     tstate.c
     unicode.c
+    weakref.c
 )
 set_target_properties(${PROJECT_NAME}
     PROPERTIES VERSION ${PROJECT_VERSION}

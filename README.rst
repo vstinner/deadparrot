@@ -132,12 +132,15 @@ PyUnicode
 * ``PyUnicode_GetMax()``
 * ``PyUnicode_InternImmortal()``: Python >= 3.0
 
+Weakref
+-------
+
+* ``PyWeakref_GetRef()``
+
 Misc
 ----
 
 * ``PyEval_InitThreads()``
-* ``PyFPE_END_PROTECT()``
-* ``PyFPE_START_PROTECT()``
 
 Tests
 =====
@@ -193,7 +196,6 @@ Unsupported new C API functions (TODO)
 * ``PyUnicode_EqualToUTF8()``
 * ``PyUnicode_EqualToUTF8AndSize()``
 * ``PyVectorcall_NARGS()``
-* ``PyWeakref_GetRef()``
 * ``Py_GetConstant()``
 * ``Py_GetConstantBorrowed()``
 * ``Py_HashPointer()``

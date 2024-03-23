@@ -44,6 +44,11 @@ IGNORE_DEPR_WARNINGS
 #endif
 
 
+// Marker to check that pointer value was set
+static const char uninitialized[] = "uninitialized";
+#define UNINITIALIZED_OBJ ((PyObject *)uninitialized)
+
+
 static PyObject *
 test_object(PyObject *Py_UNUSED(module), PyObject* Py_UNUSED(ignored))
 {
@@ -785,6 +790,85 @@ test_long_api(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 }
 
 
+static void
+gc_collect(void)
+{
+#if defined(PYPY_VERSION)
+    PyObject *mod = PyImport_ImportModule("gc");
+    assert(mod != _Py_NULL);
+
+    PyObject *res = PyObject_CallMethod(mod, "collect", _Py_NULL);
+    Py_DECREF(mod);
+    assert(res != _Py_NULL);
+    Py_DECREF(res);
+#else
+    PyGC_Collect();
+#endif
+}
+
+
+static PyObject *
+test_weakref(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
+{
+    // Create a new heap type, create an instance of this type, and delete the
+    // type. This object supports weak references.
+    PyObject *new_type = PyObject_CallFunction((PyObject*)&PyType_Type,
+                                               "s(){}", "TypeName");
+    if (new_type == _Py_NULL) {
+        return _Py_NULL;
+    }
+    PyObject *obj = PyObject_CallNoArgs(new_type);
+    Py_DECREF(new_type);
+    if (obj == _Py_NULL) {
+        return _Py_NULL;
+    }
+    Py_ssize_t refcnt = Py_REFCNT(obj);
+
+    // create a weak reference
+    PyObject *weakref = PyWeakref_NewRef(obj, _Py_NULL);
+    if (weakref == _Py_NULL) {
+        return _Py_NULL;
+    }
+
+    // test PyWeakref_GetRef(), reference is alive
+    PyObject *ref = UNINITIALIZED_OBJ;
+    assert(PyWeakref_GetRef(weakref, &ref) == 1);
+    assert(ref == obj);
+    assert(Py_REFCNT(obj) == (refcnt + 1));
+    Py_DECREF(ref);
+
+    // delete the referenced object: clear the weakref
+    Py_DECREF(obj);
+    gc_collect();
+
+    // test PyWeakref_GetRef(), reference is dead
+    ref = Py_True;
+    assert(PyWeakref_GetRef(weakref, &ref) == 0);
+    assert(ref == _Py_NULL);
+
+    // test PyWeakref_GetRef(), invalid type
+    PyObject *invalid_weakref = Py_None;
+    assert(!PyErr_Occurred());
+    ref = Py_True;
+    assert(PyWeakref_GetRef(invalid_weakref, &ref) == -1);
+    assert(PyErr_ExceptionMatches(PyExc_TypeError));
+    assert(ref == _Py_NULL);
+    PyErr_Clear();
+
+#ifndef PYPY_VERSION
+    // test PyWeakref_GetRef(NULL)
+    ref = Py_True;
+    assert(PyWeakref_GetRef(_Py_NULL, &ref) == -1);
+    assert(PyErr_ExceptionMatches(PyExc_SystemError));
+    assert(ref == _Py_NULL);
+    PyErr_Clear();
+#endif
+
+    Py_DECREF(weakref);
+    Py_RETURN_NONE;
+}
+
+
 static struct PyMethodDef methods[] = {
     {"test_object", test_object, METH_NOARGS, NULL},
     {"test_py_is", test_py_is, METH_NOARGS, _Py_NULL},
@@ -809,6 +893,7 @@ static struct PyMethodDef methods[] = {
     {"test_import", test_import, METH_NOARGS, _Py_NULL},
     {"test_list", test_list, METH_NOARGS, _Py_NULL},
     {"test_long_api", test_long_api, METH_NOARGS, _Py_NULL},
+    {"test_weakref", test_weakref, METH_NOARGS, _Py_NULL},
     {NULL, NULL, 0, NULL}
 };
 

@@ -382,6 +382,14 @@ DeadPyAPI_FUNC(int) DeadPyModule_Add(PyObject *mod, const char *name, PyObject *
 #endif
 
 
+// --- Weakref ---------------------------------------------------------------
+
+DeadPyAPI_FUNC(int) DeadPyWeakref_GetRef(PyObject *ref, PyObject **pobj);
+#if PY_VERSION_HEX < 0x030D0000 && !defined(DeadPy_NO_ALIAS)
+#  define PyWeakref_GetRef DeadPyWeakref_GetRef
+#endif
+
+
 #ifdef __cplusplus
 }
 #endif
