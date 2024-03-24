@@ -58,7 +58,7 @@ int DeadPyTime_PerfCounter(PyTime_t *result)
         }
     }
 
-    PyObject *res = PyObject_CallNoArgs(func);
+    PyObject *res = DeadPyObject_CallNoArgs(func);
     if (res == NULL) {
         return -1;
     }

@@ -204,18 +204,18 @@ Change the destination to install to a specific directory::
 Unsupported new C API functions (TODO)
 ======================================
 
+* ``PyObject_VisitManagedDict()``
+* ``PyObject_ClearManagedDict()``
+* ``PyObject_Vectorcall()``
+* ``PyVectorcall_NARGS()``
 * ``PyMapping_GetOptionalItem()``
 * ``PyMapping_GetOptionalItemString()``
-* ``PyMapping_HasKeyStringWithError()``
-* ``PyMapping_HasKeyWithError()``
-* ``PyObject_ClearManagedDict()``
 * ``PyObject_GetOptionalAttr()``
 * ``PyObject_GetOptionalAttrString()``
+* ``PyMapping_HasKeyStringWithError()``
+* ``PyMapping_HasKeyWithError()``
 * ``PyObject_HasAttrStringWithError()``
 * ``PyObject_HasAttrWithError()``
-* ``PyObject_Vectorcall()``
-* ``PyObject_VisitManagedDict()``
-* ``PyVectorcall_NARGS()``
 
 
 Unsupported removed C API functions
