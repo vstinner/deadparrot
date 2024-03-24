@@ -370,6 +370,25 @@ DeadPyAPI_FUNC(PyInterpreterState*) DeadPyThreadState_GetInterpreter(PyThreadSta
 #endif
 
 
+// --- Time ------------------------------------------------------------------
+
+#if 0x03050000 <= PY_VERSION_HEX
+#  if PY_VERSION_HEX < 0x030D00A4
+   typedef _PyTime_t PyTime_t;
+#  endif
+
+   DeadPyAPI_FUNC(double) DeadPyTime_AsSecondsDouble(PyTime_t t);
+   DeadPyAPI_FUNC(int) DeadPyTime_Monotonic(PyTime_t *result);
+   DeadPyAPI_FUNC(int) DeadPyTime_Time(PyTime_t *result);
+   DeadPyAPI_FUNC(int) DeadPyTime_PerfCounter(PyTime_t *result);
+#  if PY_VERSION_HEX < 0x030D00A4 && !defined(DeadPy_NO_ALIAS)
+#    define PyTime_AsSecondsDouble DeadPyTime_AsSecondsDouble
+#    define PyTime_Monotonic DeadPyTime_Monotonic
+#    define PyTime_Time DeadPyTime_Time
+#    define PyTime_PerfCounter DeadPyTime_PerfCounter
+#  endif
+#endif
+
 // --- Unicode ---------------------------------------------------------------
 
 #if PY_VERSION_HEX >= 0x03030000

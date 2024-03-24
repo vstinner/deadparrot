@@ -41,6 +41,7 @@ add_library(${PROJECT_NAME} SHARED
     long.c
     module.c
     object.c
+    time.c
     tstate.c
     unicode.c
     weakref.c

@@ -148,6 +148,14 @@ Thread State
 * ``PyThreadState_GetUnchecked()``
 * ``PyThreadState_LeaveTracing()``
 
+Time
+----
+
+* ``PyTime_AsSecondsDouble()``
+* ``PyTime_Monotonic()``
+* ``PyTime_PerfCounter()``
+* ``PyTime_Time()``
+
 Unicode
 -------
 
@@ -207,10 +215,6 @@ Unsupported new C API functions (TODO)
 * ``PyObject_HasAttrWithError()``
 * ``PyObject_Vectorcall()``
 * ``PyObject_VisitManagedDict()``
-* ``PyTime_AsSecondsDouble()``
-* ``PyTime_Monotonic()``
-* ``PyTime_PerfCounter()``
-* ``PyTime_Time()``
 * ``PyVectorcall_NARGS()``
 
 

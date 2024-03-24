@@ -1235,6 +1235,43 @@ test_get_constant(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 }
 
 
+#if PY_VERSION_HEX >= 0x03050000
+#define TEST_PYTIME
+
+static PyObject *
+test_time(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
+{
+    PyTime_t t;
+#define UNINITIALIZED_TIME ((PyTime_t)-483884113929936179)
+
+    t = UNINITIALIZED_TIME;
+#if PY_VERSION_HEX == 0x030D00A4
+    assert(PyTime_Time(&t) == 1); // bug fixed in Python 3.13a5
+#else
+    assert(PyTime_Time(&t) == 0);
+#endif
+    assert(t != UNINITIALIZED_TIME);
+
+    t = UNINITIALIZED_TIME;
+    assert(PyTime_Monotonic(&t) == 0);
+    assert(t != UNINITIALIZED_TIME);
+
+    // Test multiple times since an implementation uses a cache
+    for (int i=0; i < 5; i++) {
+        t = UNINITIALIZED_TIME;
+        assert(PyTime_PerfCounter(&t) == 0);
+        assert(t != UNINITIALIZED_TIME);
+    }
+
+    assert(PyTime_AsSecondsDouble(1) == 1e-9);
+    assert(PyTime_AsSecondsDouble(1500 * 1000 * 1000) == 1.5);
+    assert(PyTime_AsSecondsDouble(-500 * 1000 * 1000) == -0.5);
+
+    Py_RETURN_NONE;
+}
+#endif
+
+
 static struct PyMethodDef methods[] = {
     {"test_object", test_object, METH_NOARGS, NULL},
     {"test_py_is", test_py_is, METH_NOARGS, _Py_NULL},
@@ -1265,6 +1302,9 @@ static struct PyMethodDef methods[] = {
     {"test_dict_pop", test_dict_pop, METH_NOARGS, _Py_NULL},
     {"test_hash", test_hash, METH_NOARGS, _Py_NULL},
     {"test_get_constant", test_get_constant, METH_NOARGS, _Py_NULL},
+#ifdef TEST_PYTIME
+    {"test_time", test_time, METH_NOARGS, _Py_NULL},
+#endif
     {NULL, NULL, 0, NULL}
 };
 
