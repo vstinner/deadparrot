@@ -167,3 +167,89 @@ _DeadPyObject_FastCall(PyObject *func, PyObject *const *args, Py_ssize_t nargs)
     return res;
 #endif
 }
+
+
+Py_ssize_t DeadPyVectorcall_NARGS(size_t n)
+{
+#if PY_VERSION_HEX >= 0x030800B1
+    return PyVectorcall_NARGS(n);
+#else
+    return n & ~PY_VECTORCALL_ARGUMENTS_OFFSET;
+#endif
+}
+
+
+PyObject*
+DeadPyObject_Vectorcall(PyObject *callable, PyObject *const *args,
+                        size_t nargsf, PyObject *kwnames)
+{
+#if PY_VERSION_HEX >= 0x030900A4
+    return PyObject_Vectorcall(callable, args, nargsf, kwnames);
+#else
+#  if PY_VERSION_HEX >= 0x030800B1 && !defined(PYPY_VERSION)
+    // bpo-36974 added _PyObject_Vectorcall() to Python 3.8.0b1
+    return _PyObject_Vectorcall(callable, args, nargsf, kwnames);
+#  else
+    PyObject *posargs = NULL, *kwargs = NULL;
+    PyObject *res;
+    Py_ssize_t nposargs, nkwargs, i;
+
+    if (nargsf != 0 && args == NULL) {
+        PyErr_BadInternalCall();
+        goto error;
+    }
+    if (kwnames != NULL && !PyTuple_Check(kwnames)) {
+        PyErr_BadInternalCall();
+        goto error;
+    }
+
+    nposargs = (Py_ssize_t)PyVectorcall_NARGS(nargsf);
+    if (kwnames) {
+        nkwargs = PyTuple_GET_SIZE(kwnames);
+    }
+    else {
+        nkwargs = 0;
+    }
+
+    posargs = PyTuple_New(nposargs);
+    if (posargs == NULL) {
+        goto error;
+    }
+    if (nposargs) {
+        for (i=0; i < nposargs; i++) {
+            PyTuple_SET_ITEM(posargs, i, Py_NewRef(*args));
+            args++;
+        }
+    }
+
+    if (nkwargs) {
+        kwargs = PyDict_New();
+        if (kwargs == NULL) {
+            goto error;
+        }
+
+        for (i = 0; i < nkwargs; i++) {
+            PyObject *key = PyTuple_GET_ITEM(kwnames, i);
+            PyObject *value = *args;
+            args++;
+            if (PyDict_SetItem(kwargs, key, value) < 0) {
+                goto error;
+            }
+        }
+    }
+    else {
+        kwargs = NULL;
+    }
+
+    res = PyObject_Call(callable, posargs, kwargs);
+    Py_DECREF(posargs);
+    Py_XDECREF(kwargs);
+    return res;
+
+error:
+    Py_DECREF(posargs);
+    Py_XDECREF(kwargs);
+    return NULL;
+#  endif
+#endif
+}

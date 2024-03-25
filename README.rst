@@ -34,6 +34,8 @@ Call
 * ``PyEval_CallObjectWithKeywords()``
 * ``PyObject_CallNoArgs()``
 * ``PyObject_CallOneArg()``
+* ``PyObject_Vectorcall()``
+* ``PyVectorcall_NARGS()``
 * ``_PyObject_FastCall()``: Python >= 3.6
 
 Code
@@ -206,8 +208,6 @@ Change the destination to install to a specific directory::
 Unsupported new C API functions (TODO)
 ======================================
 
-* ``PyObject_Vectorcall()``
-* ``PyVectorcall_NARGS()``
 * ``PyMapping_GetOptionalItem()``
 * ``PyMapping_GetOptionalItemString()``
 * ``PyObject_GetOptionalAttr()``

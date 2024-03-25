@@ -173,6 +173,18 @@ DeadPyAPI_FUNC(PyObject*) _DeadPyObject_FastCall(
 #  define _PyObject_FastCall _DeadPyObject_FastCall
 #endif
 
+DeadPyAPI_FUNC(Py_ssize_t) DeadPyVectorcall_NARGS(size_t n);
+#if PY_VERSION_HEX < 0x030800B1 && !defined(DeadPy_NO_ALIAS)
+#  define PyVectorcall_NARGS DeadPyVectorcall_NARGS
+#endif
+
+DeadPyAPI_FUNC(PyObject*) DeadPyObject_Vectorcall(
+    PyObject *callable, PyObject *const *args,
+    size_t nargsf, PyObject *kwnames);
+#if PY_VERSION_HEX < 0x030900A4 && !defined(DeadPy_NO_ALIAS)
+#  define PyObject_Vectorcall DeadPyObject_Vectorcall
+#endif
+
 
 // --- Code ------------------------------------------------------------------
 
@@ -181,7 +193,7 @@ DeadPyAPI_FUNC(PyObject*) _DeadPyObject_FastCall(
    DeadPyAPI_FUNC(PyObject*) DeadPyCode_GetVarnames(PyCodeObject *code);
    DeadPyAPI_FUNC(PyObject*) DeadPyCode_GetFreevars(PyCodeObject *code);
    DeadPyAPI_FUNC(PyObject*) DeadPyCode_GetCellvars(PyCodeObject *code);
-#  if PY_VERSION_HEX < 0x030B0000  && !defined(DeadPy_NO_ALIAS)
+#  if PY_VERSION_HEX < 0x030B0000 && !defined(DeadPy_NO_ALIAS)
 #    define PyCode_GetCode DeadPyCode_GetCode
 #    define PyCode_GetVarnames DeadPyCode_GetVarnames
 #    define PyCode_GetFreevars DeadPyCode_GetFreevars
