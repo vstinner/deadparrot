@@ -9,6 +9,8 @@
 #  error "assertions must be enabled"
 #endif
 
+#define MODULE_NAME_STR "test_deadparrot_cext"
+
 #if PY_VERSION_HEX >= 0x03000000
 #  define PYTHON3 1
 #endif
@@ -1534,6 +1536,144 @@ test_vectorcall(PyObject *module, PyObject *Py_UNUSED(args))
 }
 
 
+static PyObject*
+create_string(const char *str)
+{
+    PyObject *obj;
+#ifdef PYTHON3
+    obj = PyUnicode_FromString(str);
+#else
+    obj = PyString_FromString(str);
+#endif
+    assert(obj != _Py_NULL);
+    return obj;
+}
+
+
+static PyObject *
+test_getattr(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
+{
+    assert(!PyErr_Occurred());
+
+    PyObject *obj = PyImport_ImportModule("sys");
+    if (obj == _Py_NULL) {
+        return _Py_NULL;
+    }
+
+    PyObject *attr_name = create_string("version");
+    PyObject *missing_attr = create_string("nonexistant_attr_name");
+
+    // test PyObject_GetOptionalAttr(): attribute exists
+    PyObject *value;
+    value = UNINITIALIZED_OBJ;
+    assert(PyObject_GetOptionalAttr(obj, attr_name, &value) == 1);
+    assert(value != _Py_NULL);
+    Py_DECREF(value);
+
+    // test PyObject_HasAttrWithError(): attribute exists
+    assert(PyObject_HasAttrWithError(obj, attr_name) == 1);
+
+    // test PyObject_GetOptionalAttrString(): attribute exists
+    value = UNINITIALIZED_OBJ;
+    assert(PyObject_GetOptionalAttrString(obj, "version", &value) == 1);
+    assert(!PyErr_Occurred());
+    assert(value != _Py_NULL);
+    Py_DECREF(value);
+
+    // test PyObject_HasAttrStringWithError(): attribute exists
+    assert(PyObject_HasAttrStringWithError(obj, "version") == 1);
+    assert(!PyErr_Occurred());
+
+    // test PyObject_GetOptionalAttr(): attribute doesn't exist
+    value = UNINITIALIZED_OBJ;
+    assert(PyObject_GetOptionalAttr(obj, missing_attr, &value) == 0);
+    assert(!PyErr_Occurred());
+    assert(value == _Py_NULL);
+
+    // test PyObject_HasAttrWithError(): attribute doesn't exist
+    assert(PyObject_HasAttrWithError(obj, missing_attr) == 0);
+    assert(!PyErr_Occurred());
+
+    // test PyObject_GetOptionalAttrString(): attribute doesn't exist
+    value = UNINITIALIZED_OBJ;
+    assert(PyObject_GetOptionalAttrString(obj, "nonexistant_attr_name", &value) == 0);
+    assert(!PyErr_Occurred());
+    assert(value == _Py_NULL);
+
+    // test PyObject_HasAttrStringWithError(): attribute doesn't exist
+    assert(PyObject_HasAttrStringWithError(obj, "nonexistant_attr_name") == 0);
+    assert(!PyErr_Occurred());
+
+    Py_DECREF(attr_name);
+    Py_DECREF(missing_attr);
+    Py_DECREF(obj);
+    Py_RETURN_NONE;
+}
+
+
+static PyObject *
+test_getitem(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
+{
+    assert(!PyErr_Occurred());
+
+    PyObject *value = Py_BuildValue("s", "value");
+    assert(value != _Py_NULL);
+    PyObject *obj = Py_BuildValue("{sO}", "key", value);
+    assert(obj != _Py_NULL);
+    PyObject *present_key, *missing_key;
+    PyObject *item;
+
+    present_key = create_string("key");
+    missing_key = create_string("dontexist");
+
+    // test PyMapping_GetOptionalItem(): key is present
+    item = UNINITIALIZED_OBJ;
+    assert(PyMapping_GetOptionalItem(obj, present_key, &item) == 1);
+    assert(item == value);
+    Py_DECREF(item);
+    assert(!PyErr_Occurred());
+
+    // test PyMapping_HasKeyWithError(): key is present
+    assert(PyMapping_HasKeyWithError(obj, present_key) == 1);
+    assert(!PyErr_Occurred());
+
+    // test PyMapping_GetOptionalItemString(): key is present
+    item = UNINITIALIZED_OBJ;
+    assert(PyMapping_GetOptionalItemString(obj, "key", &item) == 1);
+    assert(item == value);
+    Py_DECREF(item);
+
+    // test PyMapping_HasKeyStringWithError(): key is present
+    assert(PyMapping_HasKeyStringWithError(obj, "key") == 1);
+    assert(!PyErr_Occurred());
+
+    // test PyMapping_GetOptionalItem(): missing key
+    item = UNINITIALIZED_OBJ;
+    assert(PyMapping_GetOptionalItem(obj, missing_key, &item) == 0);
+    assert(item == _Py_NULL);
+    assert(!PyErr_Occurred());
+
+    // test PyMapping_HasKeyWithError(): missing key
+    assert(PyMapping_HasKeyWithError(obj, missing_key) == 0);
+    assert(!PyErr_Occurred());
+
+    // test PyMapping_GetOptionalItemString(): missing key
+    item = UNINITIALIZED_OBJ;
+    assert(PyMapping_GetOptionalItemString(obj, "dontexist", &item) == 0);
+    assert(item == _Py_NULL);
+
+    // test PyMapping_HasKeyStringWithError(): missing key
+    assert(PyMapping_HasKeyStringWithError(obj, "dontexist") == 0);
+    assert(!PyErr_Occurred());
+
+    Py_DECREF(obj);
+    Py_DECREF(value);
+    Py_DECREF(present_key);
+    Py_DECREF(missing_key);
+    Py_RETURN_NONE;
+}
+
+
 static struct PyMethodDef methods[] = {
     {"test_object", test_object, METH_NOARGS, NULL},
     {"test_py_is", test_py_is, METH_NOARGS, _Py_NULL},
@@ -1572,6 +1712,8 @@ static struct PyMethodDef methods[] = {
 #endif
     {"func_varargs", (PyCFunction)(void*)func_varargs, METH_VARARGS | METH_KEYWORDS, _Py_NULL},
     {"test_vectorcall", test_vectorcall, METH_NOARGS, _Py_NULL},
+    {"test_getattr", test_getattr, METH_NOARGS, _Py_NULL},
+    {"test_getitem", test_getitem, METH_NOARGS, _Py_NULL},
     {NULL, NULL, 0, NULL}
 };
 
@@ -1594,7 +1736,7 @@ static PyModuleDef_Slot module_slots[] = {
 #if PY_VERSION_HEX >= 0x03000000
 static struct PyModuleDef module_def = {
     PyModuleDef_HEAD_INIT,
-    "test_deadparrot_cext",  // m_name
+    MODULE_NAME_STR,         // m_name
     NULL,                    // m_doc
     0,                       // m_size
     methods,                 // m_methods

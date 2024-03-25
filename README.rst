@@ -24,6 +24,18 @@ Functions
 
 Functions provided by the deadparrot library.
 
+Abstract
+--------
+
+* ``PyMapping_GetOptionalItem()``
+* ``PyMapping_GetOptionalItemString()``
+* ``PyMapping_HasKeyStringWithError()``
+* ``PyMapping_HasKeyWithError()``
+* ``PyObject_GetOptionalAttr()``
+* ``PyObject_GetOptionalAttrString()``
+* ``PyObject_HasAttrStringWithError()``
+* ``PyObject_HasAttrWithError()``
+
 Call
 ----
 
@@ -203,19 +215,6 @@ Build command::
 Change the destination to install to a specific directory::
 
     cmake -B build/ -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/custom/prefix
-
-
-Unsupported new C API functions (TODO)
-======================================
-
-* ``PyMapping_GetOptionalItem()``
-* ``PyMapping_GetOptionalItemString()``
-* ``PyObject_GetOptionalAttr()``
-* ``PyObject_GetOptionalAttrString()``
-* ``PyMapping_HasKeyStringWithError()``
-* ``PyMapping_HasKeyWithError()``
-* ``PyObject_HasAttrStringWithError()``
-* ``PyObject_HasAttrWithError()``
 
 
 Unsupported removed C API functions

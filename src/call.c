@@ -203,7 +203,7 @@ DeadPyObject_Vectorcall(PyObject *callable, PyObject *const *args,
         goto error;
     }
 
-    nposargs = (Py_ssize_t)PyVectorcall_NARGS(nargsf);
+    nposargs = (Py_ssize_t)DeadPyVectorcall_NARGS(nargsf);
     if (kwnames) {
         nkwargs = PyTuple_GET_SIZE(kwnames);
     }

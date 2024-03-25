@@ -38,6 +38,27 @@ extern "C" {
 #endif
 
 
+// --- Abstract --------------------------------------------------------------
+
+DeadPyAPI_FUNC(int) DeadPyMapping_GetOptionalItem(PyObject *obj, PyObject *key, PyObject **result);
+DeadPyAPI_FUNC(int) DeadPyMapping_GetOptionalItemString(PyObject *obj, const char *key, PyObject **result);
+DeadPyAPI_FUNC(int) DeadPyMapping_HasKeyWithError(PyObject *obj, PyObject *key);
+DeadPyAPI_FUNC(int) DeadPyMapping_HasKeyStringWithError(PyObject *obj, const char *key);
+DeadPyAPI_FUNC(int) DeadPyObject_GetOptionalAttr(PyObject *obj, PyObject *attr_name, PyObject **result);
+DeadPyAPI_FUNC(int) DeadPyObject_GetOptionalAttrString(PyObject *obj, const char *attr_name, PyObject **result);
+DeadPyAPI_FUNC(int) DeadPyObject_HasAttrWithError(PyObject *obj, PyObject *attr);
+DeadPyAPI_FUNC(int) DeadPyObject_HasAttrStringWithError(PyObject *obj, const char *attr);
+#if PY_VERSION_HEX < 0x030D00A1 && !defined(DeadPy_NO_ALIAS)
+#  define PyMapping_GetOptionalItem DeadPyMapping_GetOptionalItem
+#  define PyMapping_GetOptionalItemString DeadPyMapping_GetOptionalItemString
+#  define PyMapping_HasKeyWithError DeadPyMapping_HasKeyWithError
+#  define PyMapping_HasKeyStringWithError DeadPyMapping_HasKeyStringWithError
+#  define PyObject_GetOptionalAttr DeadPyObject_GetOptionalAttr
+#  define PyObject_GetOptionalAttrString DeadPyObject_GetOptionalAttrString
+#  define PyObject_HasAttrWithError DeadPyObject_HasAttrWithError
+#  define PyObject_HasAttrStringWithError DeadPyObject_HasAttrStringWithError
+#endif
+
 // --- Object ----------------------------------------------------------------
 
 DeadPyAPI_FUNC(PyObject*) DeadPy_NewRef(PyObject *obj);
@@ -171,6 +192,11 @@ DeadPyAPI_FUNC(PyObject*) _DeadPyObject_FastCall(
          || 0x030D0000 <= PY_VERSION_HEX \
          || defined(PYPY_VERSION) && PY_VERSION_HEX < 0x03090000))
 #  define _PyObject_FastCall _DeadPyObject_FastCall
+#endif
+
+// bpo-36974 added PY_VECTORCALL_ARGUMENTS_OFFSET to Python 3.8b1
+#ifndef PY_VECTORCALL_ARGUMENTS_OFFSET
+#  define PY_VECTORCALL_ARGUMENTS_OFFSET (_Py_CAST(size_t, 1) << (8 * sizeof(size_t) - 1))
 #endif
 
 DeadPyAPI_FUNC(Py_ssize_t) DeadPyVectorcall_NARGS(size_t n);
