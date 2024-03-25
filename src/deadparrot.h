@@ -109,7 +109,12 @@ DeadPyAPI_FUNC(PyObject*) DeadPy_GetConstantBorrowed(unsigned int constant_id);
 #  define Py_GetConstantBorrowed DeadPy_GetConstantBorrowed
 #endif
 
-
+DeadPyAPI_FUNC(int) DeadPyObject_VisitManagedDict(PyObject *obj, visitproc visit, void *arg);
+DeadPyAPI_FUNC(void) DeadPyObject_ClearManagedDict(PyObject *obj);
+#if PY_VERSION_HEX < 0x030D00A1 && !defined(DeadPy_NO_ALIAS)
+#  define PyObject_VisitManagedDict DeadPyObject_VisitManagedDict
+#  define PyObject_ClearManagedDict DeadPyObject_ClearManagedDict
+#endif
 
 // --- Call ------------------------------------------------------------------
 

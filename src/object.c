@@ -135,3 +135,34 @@ PyObject* DeadPy_GetConstantBorrowed(unsigned int constant_id)
     return obj;
 #endif
 }
+
+
+int
+DeadPyObject_VisitManagedDict(PyObject *obj, visitproc visit, void *arg)
+{
+#if PY_VERSION_HEX >= 0x030D00A1
+    return PyObject_VisitManagedDict(obj, visit, arg);
+#else
+    PyObject **dict = _PyObject_GetDictPtr(obj);
+    if (*dict == NULL) {
+        return -1;
+    }
+    Py_VISIT(*dict);
+    return 0;
+#endif
+}
+
+
+void
+DeadPyObject_ClearManagedDict(PyObject *obj)
+{
+#if PY_VERSION_HEX >= 0x030D00A1
+    PyObject_ClearManagedDict(obj);
+#else
+    PyObject **dict = _PyObject_GetDictPtr(obj);
+    if (*dict == NULL) {
+        return;
+    }
+    Py_CLEAR(*dict);
+#endif
+}

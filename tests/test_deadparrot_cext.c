@@ -1272,6 +1272,85 @@ test_time(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
 #endif
 
 
+// --- HeapCTypeWithManagedDict --------------------------------------------
+
+// Py_TPFLAGS_MANAGED_DICT was added to Python 3.11.0a3
+#if PY_VERSION_HEX >= 0x030B00A3
+#  define TEST_MANAGED_DICT
+
+typedef struct {
+    PyObject_HEAD
+} HeapCTypeObject;
+
+static int
+heapmanaged_traverse(PyObject *self, visitproc visit, void *arg)
+{
+    Py_VISIT(Py_TYPE(self));
+    return PyObject_VisitManagedDict(self, visit, arg);
+}
+
+static int
+heapmanaged_clear(PyObject *self)
+{
+    PyObject_ClearManagedDict(self);
+    return 0;
+}
+
+static void
+heapmanaged_dealloc(HeapCTypeObject *self)
+{
+    PyTypeObject *tp = Py_TYPE(self);
+    PyObject_ClearManagedDict((PyObject *)self);
+    PyObject_GC_UnTrack(self);
+    PyObject_GC_Del(self);
+    Py_DECREF(tp);
+}
+
+static PyType_Slot HeapCTypeWithManagedDict_slots[] = {
+    {Py_tp_traverse, _Py_CAST(void*, heapmanaged_traverse)},
+    {Py_tp_clear, _Py_CAST(void*, heapmanaged_clear)},
+    {Py_tp_dealloc, _Py_CAST(void*, heapmanaged_dealloc)},
+    {0, 0},
+};
+
+static PyType_Spec HeapCTypeWithManagedDict_spec = {
+    "test_pythoncapi_compat.HeapCTypeWithManagedDict",
+    sizeof(PyObject),
+    0,
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_MANAGED_DICT,
+    HeapCTypeWithManagedDict_slots
+};
+
+static PyObject *
+test_managed_dict(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
+{
+    PyObject *type = PyType_FromSpec(&HeapCTypeWithManagedDict_spec);
+    if (type == NULL) {
+        return NULL;
+    }
+
+    PyObject *obj = PyObject_CallNoArgs(type);
+    if (obj == NULL) {
+        Py_DECREF(type);
+        return NULL;
+    }
+
+    // call heapmanaged_traverse()
+    PyGC_Collect();
+
+    // call heapmanaged_clear()
+    Py_DECREF(obj);
+    PyGC_Collect();
+
+    Py_DECREF(type);
+    // Just in case!
+    PyGC_Collect();
+
+    Py_RETURN_NONE;
+}
+#endif  // PY_VERSION_HEX >= 0x030B00A3
+
+
 static struct PyMethodDef methods[] = {
     {"test_object", test_object, METH_NOARGS, NULL},
     {"test_py_is", test_py_is, METH_NOARGS, _Py_NULL},
@@ -1304,6 +1383,9 @@ static struct PyMethodDef methods[] = {
     {"test_get_constant", test_get_constant, METH_NOARGS, _Py_NULL},
 #ifdef TEST_PYTIME
     {"test_time", test_time, METH_NOARGS, _Py_NULL},
+#endif
+#ifdef TEST_MANAGED_DICT
+    {"test_managed_dict", test_managed_dict, METH_NOARGS, _Py_NULL},
 #endif
     {NULL, NULL, 0, NULL}
 };

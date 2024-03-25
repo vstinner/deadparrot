@@ -125,6 +125,10 @@ Module
 Object
 ------
 
+* ``PyObject_ClearManagedDict()``
+* ``PyObject_VisitManagedDict()``
+* ``Py_GetConstant()``
+* ``Py_GetConstantBorrowed()``
 * ``Py_IS_TYPE()``
 * ``Py_Is()``
 * ``Py_IsFalse()``
@@ -135,8 +139,6 @@ Object
 * ``Py_SET_SIZE()``
 * ``Py_SET_TYPE()``
 * ``Py_XNewRef()``
-* ``Py_GetConstant()``
-* ``Py_GetConstantBorrowed()``
 
 Thread State
 ------------
@@ -204,8 +206,6 @@ Change the destination to install to a specific directory::
 Unsupported new C API functions (TODO)
 ======================================
 
-* ``PyObject_VisitManagedDict()``
-* ``PyObject_ClearManagedDict()``
 * ``PyObject_Vectorcall()``
 * ``PyVectorcall_NARGS()``
 * ``PyMapping_GetOptionalItem()``
