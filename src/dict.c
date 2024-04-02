@@ -132,3 +132,45 @@ DeadPyDict_PopString(PyObject *dict, const char *key, PyObject **result)
     return res;
 #endif
 }
+
+
+int
+DeadPyDict_SetDefaultRef(PyObject *d, PyObject *key, PyObject *default_value,
+                         PyObject **result)
+{
+#if PY_VERSION_HEX >= 0x030D00A4
+    return PyDict_SetDefaultRef(d, key, default_value, result);
+#else
+    PyObject *value;
+    if (DeadPyDict_GetItemRef(d, key, &value) < 0) {
+        // get error
+        if (result) {
+            *result = NULL;
+        }
+        return -1;
+    }
+    if (value != NULL) {
+        // present
+        if (result) {
+            *result = value;
+        }
+        else {
+            Py_DECREF(value);
+        }
+        return 1;
+    }
+
+    // missing: set the item
+    if (PyDict_SetItem(d, key, default_value) < 0) {
+        // set error
+        if (result) {
+            *result = NULL;
+        }
+        return -1;
+    }
+    if (result) {
+        *result = Py_NewRef(default_value);
+    }
+    return 0;
+#endif
+}

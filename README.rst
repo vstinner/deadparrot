@@ -66,6 +66,7 @@ Dict
 * ``PyDict_GetItemStringRef()``
 * ``PyDict_Pop()``
 * ``PyDict_PopString()``
+* ``PyDict_SetDefaultRef()``
 
 Float
 -----

@@ -248,6 +248,12 @@ DeadPyAPI_FUNC(int) DeadPyDict_PopString(PyObject *dict, const char *key, PyObje
 #  define PyDict_PopString DeadPyDict_PopString
 #endif
 
+DeadPyAPI_FUNC(int) DeadPyDict_SetDefaultRef(PyObject *d, PyObject *key, PyObject *default_value, PyObject **result);
+#if PY_VERSION_HEX < 0x030D00A4 && !defined(DeadPy_NO_ALIAS)
+#  define PyDict_SetDefaultRef DeadPyDict_SetDefaultRef
+#endif
+
+
 // --- Eval ------------------------------------------------------------------
 
 DeadPyAPI_FUNC(void) DeadPyEval_InitThreads(void);
