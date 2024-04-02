@@ -103,6 +103,7 @@ List
 
 * ``PyList_Clear()``
 * ``PyList_Extend()``
+* ``PyList_GetItemRef()``
 
 Long
 ----

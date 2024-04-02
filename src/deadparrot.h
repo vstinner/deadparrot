@@ -345,6 +345,11 @@ DeadPyAPI_FUNC(int) DeadPyList_Clear(PyObject *list);
 #  define PyList_Clear DeadPyList_Clear
 #endif
 
+DeadPyAPI_FUNC(PyObject*) DeadPyList_GetItemRef(PyObject *op, Py_ssize_t index);
+#if PY_VERSION_HEX < 0x030D00A4 && !defined(DeadPy_NO_ALIAS)
+#  define PyList_GetItemRef DeadPyList_GetItemRef
+#endif
+
 // --- Long ------------------------------------------------------------------
 
 DeadPyAPI_FUNC(int) DeadPyLong_AsInt(PyObject *obj);

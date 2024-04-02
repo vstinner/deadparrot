@@ -799,6 +799,12 @@ test_list(PyObject *Py_UNUSED(module), PyObject *Py_UNUSED(args))
     Py_DECREF(abc);
     assert(PyList_GET_SIZE(list) == 3);
 
+    // test PyList_GetItemRef()
+    PyObject *item = PyList_GetItemRef(list, 1);
+    assert(item != NULL);
+    assert(item == PyList_GetItem(list, 1));
+    Py_DECREF(item);
+
     // test PyList_Clear()
     assert(PyList_Clear(list) == 0);
     assert(PyList_GET_SIZE(list) == 0);
